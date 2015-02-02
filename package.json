@@ -1,0 +1,28 @@
+{
+  "name": "react-dev-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sterlingwes/react-dev-boilerplate.git"
+  },
+  "author": "Wes Johnson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sterlingwes/react-dev-boilerplate/issues"
+  },
+  "homepage": "https://github.com/sterlingwes/react-dev-boilerplate",
+  "devDependencies": {
+    "6to5-core": "^3.3.3",
+    "6to5-loader": "^3.0.0",
+    "react": "^0.12.2",
+    "react-hot-loader": "^1.1.4",
+    "webpack": "^1.5.3",
+    "webpack-dev-server": "^1.7.0"
+  }
+}
