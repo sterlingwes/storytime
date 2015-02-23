@@ -1,0 +1,52 @@
+@-webkit-keyframes grow
+  0%
+    -webkit-transform scale(0.1, 0.1)
+    opacity 0
+  40%
+    -webkit-transform scale(1.5, 1.5)
+    opacity 1
+  100%
+    -webkit-transform scale(1, 1)
+    opacity 1
+
+.st-story
+  position relative
+  padding 10px
+  background-color #f0f0f0
+  border-bottom 1px solid #ccc
+  color #555
+  transition-property background-color, color
+  transition-duration 0.3s
+  opacity 1
+  
+  &.st-selected
+    background-color #C4E2F4
+    color #3D7DA5
+    
+  &.st-hidden
+    overflow hidden
+    padding 0
+    line-height 0
+    height 0px
+    opacity 0
+    border 0
+    
+  .st-projectlabel
+    display inline-block
+    overflow hidden
+    text-overflow ellipsis
+    color #777
+    text-transform uppercase
+    font-size 0.8em
+    padding-right 5px
+    width 50px
+  
+  .st-status
+    position absolute
+    right 10px
+    
+    i.icon-play
+      display inline-block
+      -webkit-animation grow 0.3s ease-out
+      position relative
+      font-size 1.4em

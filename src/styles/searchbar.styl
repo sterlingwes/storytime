@@ -1,0 +1,44 @@
+.st-search
+  position relative
+  padding 0 10px
+  min-height: 40px
+  border-bottom 1px solid #ccc
+  z-index 2
+  
+  &.scrolling
+    box-shadow 0 2px 3px rgba(0,0,0,0.1)
+  
+  input
+    width 100%
+    padding 15px 0px
+    font-size 1.1em
+    border 0
+    outline none
+    
+  i.icon-cog
+    position absolute
+    top 14px
+    right 15px
+    font-size 1.3em
+    color #aaa
+    padding 0 5px
+    height 25px
+    line-height 1.4em
+    
+  .rotate
+    -webkit-transition-duration 0.8s
+    -moz-transition-duration 0.8s
+    -o-transition-duration 0.8s
+    transition-duration 0.8s
+    -webkit-transition-property -webkit-transform, color
+    -moz-transition-property -moz-transform, color
+    -o-transition-property -o-transform, color
+    transition-property transform, color
+    overflow hidden
+    
+  .rotate:hover
+    cursor pointer
+    color #555
+    -webkit-transform rotate(180deg)
+    -moz-transform rotate(180deg)
+    -o-transform rotate(180deg)

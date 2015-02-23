@@ -1,27 +1,37 @@
 {
-  "name": "react-dev-boilerplate",
+  "name": "storytime",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple time tracking menu bar app for scrum",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "istanbul cover _mocha test/**/*-test.js -- --compilers js:babel/register",
     "start": "node index.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sterlingwes/react-dev-boilerplate.git"
+    "url": "https://github.com/sterlingwes/storytime.git"
   },
   "author": "Wes Johnson",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sterlingwes/react-dev-boilerplate/issues"
+    "url": "https://github.com/sterlingwes/storytime/issues"
   },
-  "homepage": "https://github.com/sterlingwes/react-dev-boilerplate",
-  "devDependencies": {
-    "6to5-core": "^3.3.3",
-    "6to5-loader": "^3.0.0",
+  "homepage": "https://github.com/sterlingwes/storytime",
+  "dependencies": {
+    "babel": "^4.0.1",
+    "babel-core": "^4.0.1",
+    "babel-loader": "^4.0.0",
+    "css-loader": "^0.9.1",
+    "file-loader": "^0.8.1",
+    "jsdom": "^3.1.1",
+    "moment": "^2.9.0",
     "react": "^0.12.2",
     "react-hot-loader": "^1.1.4",
+    "react-router": "^0.12.0",
+    "sinon": "^1.12.2",
+    "style-loader": "^0.8.3",
+    "stylus-loader": "^0.5.0",
+    "url-loader": "^0.5.5",
     "webpack": "^1.5.3",
     "webpack-dev-server": "^1.7.0"
   }
