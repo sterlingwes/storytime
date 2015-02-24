@@ -8,8 +8,8 @@ module.exports = {
     'webpack-dev-server/client?http://localhost:8080'
   ],
   output: {
-    path: __dirname + '/dist/',
-    publicPath: '/dist/',
+    path: __dirname + '/build/',
+    publicPath: '/build/',
     filename: 'component.js'
   },
   plugins: [
