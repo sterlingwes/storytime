@@ -108,10 +108,10 @@ describe('<StoryList />', function() {
       expect(this.listEl.childNodes[2].className.indexOf('st-timing')>=0).to.be(false);
     });
     
-    it('will soon handle left and right', ()=> {
-      TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 37 });
-      TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 39 });
-    });
+    // it('will soon handle left and right', ()=> {
+    //   TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 37 });
+    //   TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 39 });
+    // });
     
     it('should allow for keybaord jump to bottom', () => {
       TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 40, metaKey: true });

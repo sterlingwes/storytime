@@ -11,7 +11,7 @@ const React = require('react')
 
 module.exports = React.createClass({
   
-  mixins: [Router.Navigation],
+  mixins: [ Router.Navigation ],
   
   getInitialState() {
     return {
@@ -194,6 +194,10 @@ module.exports = React.createClass({
     return !!this.state.currentTimer;
   },
   
+  showDetail() {
+    this.transitionTo('detail', { id: this.state.selectStory });
+  },
+  
   /*
    * onKeyDown(event) handles all key events in the SearchBar
    */
@@ -216,7 +220,7 @@ module.exports = React.createClass({
         if(e.metaKey) return this.scrollTop();
         return this.moveSelection(-1);
       case 39: // right
-        return;
+        return this.showDetail()
       case 40: // down
         if(e.metaKey) return this.scrollBottom();
         return this.moveSelection(1);

@@ -1,6 +1,8 @@
 import _ from "lodash";
 import m from "moment";
 
+const FROM_MILLISECONDS = 3600000;
+
 class Story {
   constructor(props, id) {
     this.id = id;

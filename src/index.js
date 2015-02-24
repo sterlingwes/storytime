@@ -1,13 +1,13 @@
 require('./config/quark');
 require('./styles/base.styl');
 
-const React = require('react')
-    , Router = require('react-router')
-    , { Route, DefaultRoute, RouteHandler, Link } = Router
-    , TransitionGroup = require('react/lib/ReactCSSTransitionGroup')
-    
+import React from "react"
+import Router from "react-router"
+import TransitionGroup from "react/lib/ReactCSSTransitionGroup"
+
+const { Route, DefaultRoute, RouteHandler, Link } = Router
     // components
-    , { SearchBar, StoryList } = require('./components/index')
+    , { SearchBar, StoryList, StoryDetail } = require('./components/index')
   ;
 
 var App = React.createClass({
@@ -30,6 +30,7 @@ var App = React.createClass({
 const Routes = (
   <Route handler={App} path="/">
     <DefaultRoute handler={StoryList} />
+    <Route handler={StoryDetail} path="/story/:id" name="detail" />
   </Route>
 );
 
