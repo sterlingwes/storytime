@@ -50,7 +50,7 @@ class Story {
       hours: this.props.hours.map(period => {
         return {
           start: period.start.valueOf(),
-          end: period.end.valueOf()
+          end: period.end ? period.end.valueOf() : undefined
         };
       })
     });

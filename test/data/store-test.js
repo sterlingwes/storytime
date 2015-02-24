@@ -38,6 +38,13 @@ describe('Store class', function() {
     });
   });
   
+  describe('remove()', ()=> {
+    it('should return false if no story matches the id', ()=> {
+      this.store.add({ project:'My Project', name:'Added Story' });
+      expect(this.store.remove('nothere')).to.be(false);
+    });
+  });
+  
   describe('getById()', ()=> {
     it('should search for an item by uid', ()=> {
       this.store.add({ project:'Some Project', name:'My Story' });

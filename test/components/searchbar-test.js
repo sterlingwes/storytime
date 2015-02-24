@@ -1,5 +1,6 @@
+import dom from "../support/dom" // must load before React
+
 import React from "react/addons"
-import dom from "../support/dom"
 import SearchBar from "../../src/components/searchbar"
 import expect from "expect.js"
 import sinon from "sinon"
@@ -60,11 +61,11 @@ describe('<SearchBar />', function() {
       expect(document.activeElement).to.eql(this.inputEl);
     });
     
-    // it('should clear the search if refocused', ()=> {
-    //   TestUtils.Simulate.click(this.focusEl);
-    //   TestUtils.Simulate.click(this.inputEl);
-    //   expect(this.inputEl.value).to.eql('');
-    // });
+    it('should clear the search if refocused', ()=> {
+      TestUtils.Simulate.click(this.focusEl);
+      TestUtils.Simulate.click(this.inputEl);
+      expect(this.inputEl.value).to.eql('');
+    });
   });
   
   describe('settings icon', ()=> {

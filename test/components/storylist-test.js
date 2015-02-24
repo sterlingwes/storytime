@@ -1,4 +1,5 @@
-import dom from "../support/dom"
+import dom from "../support/dom" // must load before React
+
 import React from "react/addons"
 import expect from "expect.js"
 import sinon from "sinon"
@@ -15,23 +16,23 @@ describe('<StoryList />', function() {
   
   before('render and locate element', ()=> {
     
-    let renderTarget = document.getElementsByTagName('body')[0]
-      , renderedComponent = React.render(<StoryList />, renderTarget);
+    let renderTarget = document.getElementsByTagName('body')[0];
+    this.renderedComponent = React.render(<StoryList />, renderTarget);
 
     this.listDiv = TestUtils.findRenderedDOMComponentWithClass(
-      renderedComponent, 'st-storylist'
+      this.renderedComponent, 'st-storylist'
     );
 
     this.listEl = this.listDiv.getDOMNode();
     
     this.searchBar = TestUtils.findRenderedDOMComponentWithClass(
-      renderedComponent, 'st-search'
+      this.renderedComponent, 'st-search'
     );
     
     this.searchEl = this.searchBar.getDOMNode();
     
     this.searchInput = TestUtils.findRenderedDOMComponentWithClass(
-      renderedComponent, 'st-searchinput'
+      this.renderedComponent, 'st-searchinput'
     );
 
     this.inputEl = this.searchInput.getDOMNode();
@@ -68,6 +69,12 @@ describe('<StoryList />', function() {
       expect(hiddenStories).to.be(1);
       expect(nodeList.length - hiddenStories).to.be(2);
     });
+    
+    it('should set an empty search when the input first receives focus', ()=> {
+      expect(this.renderedComponent.state.searchStr).to.be('one');
+      TestUtils.Simulate.focus(this.inputEl);
+      expect(this.renderedComponent.state.searchStr).to.be('');
+    });
   });
   
   describe('keyboard events', ()=> {
@@ -91,10 +98,15 @@ describe('<StoryList />', function() {
       expect(this.isSelected(2)).to.be(true);
     });
     
-    // it('should start the timer on enter', ()=> {
-    //   TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 13 });
-    //   expect(this.listEl.childNodes[2].className.indexOf('st-timimg')>=0).to.be(true);
-    // });
+    it('should start the timer on enter', ()=> {
+      TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 13 });
+      expect(this.listEl.childNodes[2].className.indexOf('st-timing')>=0).to.be(true);
+    });
+    
+    it('should stop the timer on enter after it has started', ()=> {
+      TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 13 });
+      expect(this.listEl.childNodes[2].className.indexOf('st-timing')>=0).to.be(false);
+    });
     
     it('will soon handle left and right', ()=> {
       TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 37 });
@@ -112,10 +124,18 @@ describe('<StoryList />', function() {
       expect(global.quark.closePopup.calledOnce).to.be(true);
     });
     
-    // it('should allow for creating stories', ()=> {
-    //   this.search('test');
-    //   TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 13, metaKey: true });
-    //   expect(this.listEl.childNodes.length).to.be(4);
-    // });
+    it('should allow for creating stories', ()=> {
+      this.search('test');
+      TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 13, metaKey: true });
+      expect(this.listEl.childNodes.length).to.be(4);
+      expect(this.isSelected(0)).to.be(true);
+    });
+    
+    it('should allow for deleting stories', ()=> {
+      TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 8, metaKey: true });
+      expect(this.listEl.childNodes.length).to.be(3);
+      let storyNames = JSON.parse(localStorage.getItem('st')).map(story => { return story.name });
+      expect(storyNames).to.eql(['Planning','Support','Planning']);
+    });
   });
 })

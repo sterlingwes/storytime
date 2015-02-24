@@ -20,7 +20,7 @@ module.exports = React.createClass({
       searchProj: DEFAULT_SEARCH_REGEX,
       searchhStr: '',
       stories: this.getStories(),
-      selectIndex: 0,
+      selectIndex: 0,  // index of selected story (based on state.stories order)
       selectStory: '', // unique ID of selected story
       scrolling: false
     };
@@ -157,7 +157,9 @@ module.exports = React.createClass({
   deleteSelection() {
     if(confirm('Are you sure you want to delete this item?')) {
       store.remove(this.state.selectStory);
-      this.setStories();
+      this.setStories(()=> {
+        this.scrollTop();
+      });
     }
   },
   
@@ -239,7 +241,7 @@ module.exports = React.createClass({
     this.setState({
       searchProj: projRegex,
       searchName: nameRegex,
-      searchStr: q,
+      searchStr: q || '',
       selectIndex: 0
     }, ()=> {
       this.setStories();
