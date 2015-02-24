@@ -119,7 +119,7 @@ module.exports = React.createClass({
       
       let target = store.getById(selectionId);
       if(target) {
-        target.newSession();
+        store.start(selectionId);
         this.setState({ currentTimer: selectionId }, ()=> {
           this.setStories();
           // set the menu label to the current project name
@@ -139,8 +139,7 @@ module.exports = React.createClass({
     let startTimer = this.state.currentTimer;
     if(this.hasTimer()) {
       // close the open timing session
-      let target = store.getById(startTimer)
-      if(target) target.endSession();
+      store.stop(startTimer);
       this.setState({ currentTimer: '' }, ()=> {
         quark.setLabel('');
         // refresh the listView
@@ -191,7 +190,7 @@ module.exports = React.createClass({
    */
   hasTimer(id) {
     if(!this.state) return false;
-    if(id) return this.state.currentTimer == id;
+    if(id) return this.state.currentTimer == id || store.started(id);
     return !!this.state.currentTimer;
   },
   

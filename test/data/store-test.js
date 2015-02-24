@@ -57,6 +57,49 @@ describe('Store class', function() {
     });
   });
   
+  describe('start()', ()=> {
+    it('should open a new session story and persist the changes', ()=> {
+      this.store.save({ project:'Timed', name:'Session' });
+      let last = this.store.stories[0];
+      expect(localStorage.getItem('st')).to.be(JSON.stringify(
+        [{project:"Timed", name:"Session", hours:[]}]
+      ));
+      this.store.start(last.id);
+      expect(localStorage.getItem('st')).to.be(JSON.stringify([{
+        project: 'Timed', name: 'Session',
+        hours: [{start: last.props.hours[0].start.valueOf()}]
+      }]));
+    });
+  });
+  
+  describe('started()', ()=> {
+    it('should return true if the story has an started timer', ()=> {
+      this.store.save({ project:'Timed', name:'Session' });
+      let last = this.store.stories[0];
+      this.store.start(last.id);
+      expect(this.store.started(last.id)).to.be(true);
+      this.store.stop(last.id);
+      expect(this.store.started(last.id)).to.be(false);
+      expect(this.store.started('notthere')).to.be(false);
+    });
+  });
+  
+  describe('stop()', ()=> {
+    it('should close an open session and persist the changes', ()=> {
+      this.store.save({ project:'Timed', name:'Session' });
+      let last = this.store.stories[0];
+      this.store.start(last.id);
+      this.store.stop(last.id);
+      expect(localStorage.getItem('st')).to.be(JSON.stringify([{
+        project: 'Timed', name: 'Session',
+        hours: [{
+          start: last.props.hours[0].start.valueOf(),
+          end: last.props.hours[0].end.valueOf()
+        }]
+      }]));
+    });
+  });
+  
   describe('clearAll()', ()=> {
     it('should clear the localstorage', ()=> {
       expect(localStorage.getItem('st')).to.eql('[]');

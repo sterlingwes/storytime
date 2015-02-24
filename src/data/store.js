@@ -58,6 +58,30 @@ class StoryStore {
     localStorage.setItem(StoreName, JSON.stringify(this.stories));
   }
   
+  /*
+   * start(storyId) starts a new session timer for the targeted story
+   */
+  start(id) {
+    let story = this.getById(id);
+    if(story) story.newSession();
+    this.persist();
+  }
+  
+  /*
+   * stop(storyId) stops the open session timer for the targeted story
+   */
+  stop(id) {
+    let story = this.getById(id);
+    if(story) story.endSession();
+    this.persist();
+  }
+  
+  started(id) {
+    let story = this.getById(id);
+    if(!story) return false;
+    return story.hasOpenSession();
+  }
+  
   clearAll() {
     this.stories = [];
     localStorage.setItem(StoreName, undefined);
