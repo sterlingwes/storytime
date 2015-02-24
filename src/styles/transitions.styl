@@ -1,0 +1,24 @@
+.stpane-enter, .stpane-leave
+  position absolute
+  width 100%
+  height 100%
+  top 0
+  transition left .2s ease-in-out
+
+.stpane-enter
+  &.st-main
+    left -100%
+  &.st-storydetail
+    left 100%
+    
+.stpane-leave
+  left 0%
+
+.stpane-enter.stpane-enter-active
+  left 0%
+
+.stpane-leave.stpane-leave-active
+  &.st-main
+    left -100%
+  &.st-storydetail
+    left 100%

@@ -47,6 +47,18 @@ class Story {
     return this.props.hours.length;
   }
   
+  consolidateHours() {
+    let days = {};
+    this.props.hours.forEach(sesh => {
+      let day = sesh.start.format('L');
+      
+      if(!days[day]) days[day] = { hours: 0, isOpen: !sesh.end }
+
+      let lastDate = sesh.end || moment();
+      days[day].hours += lastDate - sesh.start;
+    });
+  }
+  
   toJSON() {
     return _.extend({}, this.props, {
       hours: this.props.hours.map(period => {
