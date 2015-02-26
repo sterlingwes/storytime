@@ -4,7 +4,7 @@ A simple time tracking menu bar app for scrum
 
 ## Development
 
-StoryTime is a React.js app using react-router and packaged with webpack.
+StoryTime is a React.js app using react-router and packaged with webpack. The compiled assets are then compiled with [Quark Shell](https://github.com/HackPlan/quark-shell-mac) into a Mac OS X menubar app.
 
 Install dependencies:
 
@@ -28,6 +28,10 @@ Owing to dependency issues, a node version manager is necessary for development.
 *  node 0.10 to run tests
 
 Closing this gap is a WIP.
+
+### Building & Distributing
+
+Coming soon.
 
 ## Todo
 
