@@ -320,6 +320,29 @@ module.exports = React.createClass({
   },
   
   render() {
+    
+    let list;
+    
+    if(this.state.stories.length) {
+      list = (
+        <div ref="list" className="st-storylist" onScroll={this.scrolled}>
+          { this.state.stories }
+        </div>
+      );
+    }
+    else {
+      list = (
+        <div className="st-storylist-empty">
+          <div><i className="icon-speech-bubble"></i> Welcome!</div>
+          <div className="small">
+            Try adding a new story with <b><i className="icon-command"></i> + Enter</b>
+            <br/><br/>
+            See the preferences <b>Shortcuts</b> tab for more
+          </div>
+        </div>
+      );
+    }
+    
     return (
       <div className="st-main">
         <SearchBar
@@ -329,9 +352,7 @@ module.exports = React.createClass({
           keyHandler={this.onKeyDown}
           query={this.state.searchStr}
           isScrolling={this.state.scrolling} />
-        <div ref="list" className="st-storylist" onScroll={this.scrolled}>
-          { this.state.stories }
-        </div>
+        { list }
       </div>
     );
   }

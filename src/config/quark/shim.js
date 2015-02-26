@@ -8,7 +8,9 @@ module.exports = [
   'setMenubarHighlightedIcon',
   'setLabel',
   'openPopup',
-  'closePopup'
+  'closePopup',
+  'on',
+  'emit'
 ].reduce((m,k) => {
   m[k] = noop;
   return m;

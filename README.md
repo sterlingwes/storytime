@@ -2,9 +2,9 @@
 
 A simple time tracking menu bar app for scrum
 
-## Todo
+## Roadmap
 
-[See todos in open issues](https://github.com/sterlingwes/storytime/issues?q=is%3Aopen+is%3Aissue+label%3Atodo)
+[See milestones](https://github.com/sterlingwes/storytime/milestones).
 
 ## Development
 

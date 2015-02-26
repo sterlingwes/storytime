@@ -13,7 +13,6 @@ class StoryStore {
     this.save(initRecords || this.read());
     
     quark.on('clearData', ()=> {
-      console.log('clearing data');
       this.clearAll();
       this.resetListener();
     });
@@ -62,7 +61,7 @@ class StoryStore {
    * and sets up the index
    */
   save(stories) {
-    if(!_.isArray(stories)) stories = [stories];
+    if(stories && !_.isArray(stories)) stories = [stories];
     (stories || []).forEach( (storyProps, index) => {
       this.add(storyProps, index);
     });

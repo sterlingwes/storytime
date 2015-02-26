@@ -15,7 +15,7 @@ quark.setupPreferences([
     "label": "Data", "identifier": "data", "icon": "NSPreferencesGeneral", "height": 280,
   },
   {
-    "label": "Shortcut", "identifier": "shortcut", "icon": "NSAdvanced", "height": 80,
+    "label": "Shortcuts", "identifier": "shortcut", "icon": "NSAdvanced", "height": 250,
     "nativeComponents": [{
         type: "ShortcutRecorder",
         options: {
