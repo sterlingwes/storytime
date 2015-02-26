@@ -20,6 +20,19 @@ Run tests and generate coverage reports:
 
 Tests are run with mocha through istanbul and use React.TestUtils to simulate events, expect.js for assertions and sinon.js for stubbing and mocking.
 
+### Node Versioning
+
+Owing to dependency issues, a node version manager is necessary for development.
+
+*  node 1.1 to run the dev server
+*  node 0.10 to run tests
+
+Closing this gap is a WIP.
+
 ## Todo
 
 [See todos in open issues](https://github.com/sterlingwes/storytime/issues?q=is%3Aopen+is%3Aissue+label%3Atodo)
+
+## License
+
+MIT
