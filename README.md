@@ -2,6 +2,10 @@
 
 A simple time tracking menu bar app for scrum
 
+## Todo
+
+[See todos in open issues](https://github.com/sterlingwes/storytime/issues?q=is%3Aopen+is%3Aissue+label%3Atodo)
+
 ## Development
 
 StoryTime is a React.js app using react-router and packaged with webpack. The compiled assets are then compiled with [Quark Shell](https://github.com/HackPlan/quark-shell-mac) into a Mac OS X menubar app.
@@ -32,10 +36,6 @@ Closing this gap is a WIP.
 ### Building & Distributing
 
 Coming soon.
-
-## Todo
-
-[See todos in open issues](https://github.com/sterlingwes/storytime/issues?q=is%3Aopen+is%3Aissue+label%3Atodo)
 
 ## License
 

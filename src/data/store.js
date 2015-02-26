@@ -10,6 +10,10 @@ class StoryStore {
     
     this.index = {};
     this.save(initRecords || this.read());
+    
+    quark.on('clearData', ()=> {
+      this.clearAll();
+    });
   }
   
   fetch() {

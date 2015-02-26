@@ -105,12 +105,14 @@ module.exports = React.createClass({
       this.setStories(()=>{
         let yPos = this.state.selectIndex * 36
           , listNode = this.getList();
-          
+        
+        // if we're scrolling from off-top
         if(yPos < listNode.scrollTop)
           listNode.scrollTop = yPos - 20;
           
-        if((yPos + 50) >= (listNode.scrollTop + listNode.offsetHeight))
-          listNode.scrollTop = listNode.scrollTop + 36;
+        // if we're scrolling from off-bottom
+        if((yPos + 36) >= (listNode.scrollTop + listNode.offsetHeight))
+          listNode.scrollTop = yPos + 36;
       });
     });
   },

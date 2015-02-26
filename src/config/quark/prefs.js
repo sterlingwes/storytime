@@ -12,6 +12,9 @@ quark.addKeyboardShortcut({
 
 quark.setupPreferences([
   {
+    "label": "Data", "identifier": "data", "icon": "NSPreferencesGeneral", "height": 200,
+  },
+  {
     "label": "Shortcut", "identifier": "shortcut", "icon": "NSAdvanced", "height": 80,
     "nativeComponents": [{
         type: "ShortcutRecorder",
