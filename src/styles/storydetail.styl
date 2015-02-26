@@ -22,3 +22,26 @@
     position absolute
     top -50px
     right -100px
+    
+  ul.st-detail-hours
+    list-style none
+    padding 0
+    margin 0
+
+    li
+      display inline-block
+      margin-right 20px
+      padding-left 0em
+      text-indent .2em
+      
+      &:before
+        content "\2014"
+        color #DDD
+      
+      &.st-storysession-active
+        color #3D7DA5
+        
+        &:before
+          color #3D7DA5
+          font-family "icomoon"
+          content "\e052"

@@ -1,6 +1,6 @@
 import React from "react";
 import Router from "react-router";
-import StoryDetailSesssion from "./storysession.js";
+import StoryDetailSession from "./storysession.js";
 
 const cx = React.addons.classSet
     , store = require('../data/index');
@@ -21,17 +21,27 @@ module.exports = React.createClass({
   key(e) {
     switch(e.keyCode) {
       case 37:
-        return this.goBack();
+        this.headingBack = true;
+        return this.transitionTo('/', null, { select: this.getParams().id });
     }
   },
   
   refocus() {
+    if(this.headingBack) return;
     this.refs.keyInput.getDOMNode().focus();
   },
   
   consolidateSessions(story) {
-    let days = {};
-    
+    let days = story.consolidateTime();
+    return Object.keys(days).sort().reverse().map(day => {
+      let dayMeta = days[day];
+      return (
+        <StoryDetailSession key={day}
+          day={parseInt(day)}
+          hours={dayMeta.hours}
+          isTiming={dayMeta.isOpen} />
+      );
+    });
   },
   
   render() {
@@ -40,7 +50,18 @@ module.exports = React.createClass({
     };
     
     let params = this.getParams()
-      , story = store.getById(params.id);
+      , story = store.getById(params.id)
+      , sessionList
+      , sessions = this.consolidateSessions(story);
+      
+    if(sessions.length){
+      sessionList = (
+        <ul className="st-detail-hours">
+          { sessions }
+        </ul>
+      );
+    }
+    else sessionList = <div className="st-detail-none">No time tracked, yet!</div>;
     
     return (
       <div className={cx(classes)}>
@@ -48,9 +69,7 @@ module.exports = React.createClass({
           <span className="st-detail-project">{ story.get('project') }</span>
           <span className="st-detail-name">{ story.get('name') }</span>
         </div>
-        <ul className="st-detail-hours">
-          { this.consolidateSessions(story) }
-        </ul>
+        { sessionList }
         <input className="st-detail-input"
           ref="keyInput"
           onKeyDown={this.key}

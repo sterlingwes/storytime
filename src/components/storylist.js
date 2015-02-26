@@ -11,11 +11,12 @@ const React = require('react')
 
 module.exports = React.createClass({
   
-  mixins: [ Router.Navigation ],
+  mixins: [ Router.Navigation, Router.State ],
   
   getInitialState() {
     return {
       currentTimer: '', // points to unique ID of timed story
+      returned: false, // indicates we've already handled a return query param to reset the last selection
       searchName: DEFAULT_SEARCH_REGEX,
       searchProj: DEFAULT_SEARCH_REGEX,
       searchhStr: '',
@@ -43,14 +44,33 @@ module.exports = React.createClass({
    * or is selected
    */
   getStories() {
-    let filteredIndex = -1;
+    let filteredIndex = -1
+      , returned = this.state ? this.state.returned : false
+      , q = this.getQuery();
+      
     return store.fetch().map( (story,i) => {
       let visible = this.matchSearch(story);
       if(visible) filteredIndex++;
-      let selectedIndex = this.state ? this.state.selectIndex : 0
-        , isSelected = selectedIndex === filteredIndex;
+      let selectedIndex = this.state ? this.state.selectIndex : 0;
+
+      // if we're returning, don't default to selecting the first item
+      if(q.select && !returned && selectedIndex === 0) selectedIndex = false;
+
+      // if we're returning from a detail view, reselect that story
+      if(q.select && q.select == story.id && !returned) {
+        returned = true;
+        selectedIndex = filteredIndex;
+      }
       
-      if(isSelected) this.setState({ selectStory: story.id });
+      let isSelected = selectedIndex === filteredIndex;
+      
+      if(isSelected) {
+        this.setState({
+          selectStory: story.id,
+          selectIndex: selectedIndex,
+          returned: returned
+        });
+      }
       
       return <Story key={i}
                   story={story.get('name')}
@@ -195,6 +215,9 @@ module.exports = React.createClass({
   },
   
   showDetail() {
+    this.setState({
+      lastDetail: this.state.selectStory
+    });
     this.transitionTo('detail', { id: this.state.selectStory });
   },
   

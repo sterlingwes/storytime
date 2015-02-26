@@ -1,7 +1,8 @@
 import _ from "lodash";
 import m from "moment";
 
-const FROM_MILLISECONDS = 3600000;
+const HOURS_FROM_MILLISECONDS = 3600000
+    , MINUTES_FROM_MILLISECONDS = HOURS_FROM_MILLISECONDS / 60;
 
 class Story {
   constructor(props, id) {
@@ -47,16 +48,31 @@ class Story {
     return this.props.hours.length;
   }
   
-  consolidateHours() {
+  consolidateTime(unit) {
     let days = {};
     this.props.hours.forEach(sesh => {
-      let day = sesh.start.format('L');
+      let day = this.getDayValue(sesh.start);
       
-      if(!days[day]) days[day] = { hours: 0, isOpen: !sesh.end }
+      if(!days[day]) days[day] = { hours: 0, minutes: 0, isOpen: !sesh.end }
 
-      let lastDate = sesh.end || moment();
-      days[day].hours += lastDate - sesh.start;
+      let lastDate = sesh.end || m()
+        , diff = lastDate - sesh.start;
+        
+      days[day].hours += Math.round(diff / HOURS_FROM_MILLISECONDS * 10) / 10;
+      days[day].minutes += Math.round(diff / MINUTES_FROM_MILLISECONDS);
+      if(!sesh.end) days[day].isOpen = true;
     });
+    
+    // filter out near-zero values
+    for(let d in days) {
+      if(days[d].hours === 0.0) delete days[d];
+    }
+    
+    return days;
+  }
+  
+  getDayValue(moment) {
+    return (new Date(moment.year(),moment.month(),moment.date())).valueOf();
   }
   
   toJSON() {

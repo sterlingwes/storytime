@@ -1,5 +1,6 @@
 import React from "react";
 import StoryDetailSesssion from "./storysession.js";
+import moment from "moment";
 
 const cx = React.addons.classSet
     , store = require('../data/index');
@@ -15,13 +16,18 @@ module.exports = React.createClass({
   
   render() {
     let classes = {
-      'st-storysession': true
+      'st-storysession': true,
+      'st-storysession-active': this.props.isTiming
     };
     
+    let dayLabel = moment(this.props.day).format('M.D')
+      , hours = Math.round(this.props.hours * 10) / 10;
+    
     return (
-      <span className={cx(classes)}>
-        { this.props.hours }
-      </span>
+      <li className={cx(classes)}>
+        <span className="st-storyday">{ dayLabel }</span>
+        <span className="st-storydayhours">{ hours }</span>
+      </li>
     );
   }
 });

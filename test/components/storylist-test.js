@@ -15,6 +15,10 @@ import StoryList from "../../src/components/storylist"
 describe('<StoryList />', function() {
   
   before('render and locate element', ()=> {
+
+    // stub methods
+    let getQueryFn = ()=> { return { select: 0 } };
+    this.getQueryStub = sinon.stub(StoryList.type.prototype.__reactAutoBindMap, "getQuery", getQueryFn);
     
     let renderTarget = document.getElementsByTagName('body')[0];
     this.renderedComponent = React.render(<StoryList />, renderTarget);
