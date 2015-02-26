@@ -31,6 +31,10 @@ module.exports = React.createClass({
     return {};
   },
   
+  componentDidMount() {
+    store.setListener(()=> { this.setStories() });
+  },
+  
   /*
    * getList() returns a reference to the listview DOM node
    */

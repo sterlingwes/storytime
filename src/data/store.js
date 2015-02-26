@@ -4,16 +4,28 @@ import _ from "lodash";
 const StoreName = 'st';
 
 class StoryStore {
-  constructor(initRecords) {
+  constructor(initRecords, changeListener) {
     this.storeName = StoreName;
     this.stories = [];
+    this.changeListener = changeListener;
     
     this.index = {};
     this.save(initRecords || this.read());
     
     quark.on('clearData', ()=> {
+      console.log('clearing data');
       this.clearAll();
+      this.resetListener();
     });
+  }
+  
+  setListener(changeListener) {
+    this.changeListener = changeListener;
+  }
+  
+  resetListener() {
+    if(typeof this.changeListener === 'function')
+      this.changeListener();
   }
   
   fetch() {
