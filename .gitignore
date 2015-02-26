@@ -1,5 +1,4 @@
 coverage/
 node_modules/
-build/*
-!build/index.html
+build/component.js
 src/data/seed.js
