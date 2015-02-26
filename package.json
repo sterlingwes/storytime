@@ -4,7 +4,7 @@
   "description": "A simple time tracking menu bar app for scrum",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover _mocha test/**/*-test.js -- --compilers js:babel/register",
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha test/**/*-test.js -- --compilers js:babel/register",
     "start": "node index.js"
   },
   "repository": {
@@ -23,8 +23,11 @@
     "babel-loader": "^4.0.0",
     "css-loader": "^0.9.1",
     "file-loader": "^0.8.1",
+    "istanbul": "^0.3.6",
     "jsdom": "^3.1.1",
+    "mocha": "^2.1.0",
     "moment": "^2.9.0",
+    "object-assign": "^2.0.0",
     "react": "^0.12.2",
     "react-hot-loader": "^1.1.4",
     "react-router": "^0.12.0",
