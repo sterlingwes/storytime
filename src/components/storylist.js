@@ -92,9 +92,10 @@ module.exports = React.createClass({
     let nameRegex, projRegex;
     if(!q)  nameRegex = projRegex = DEFAULT_SEARCH_REGEX;
     else {
-      let qParts = q.split(/\s/)
+      let qRegXSafe = q.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
+        , qParts = qRegXSafe.split(/\s/)
         , qProj = qParts.shift();
-      nameRegex = new RegExp("\\b(" + q + ')', 'i');
+      nameRegex = new RegExp("\\b(" + qRegXSafe + ')', 'i');
       projRegex = new RegExp("\\b(" + qProj + ")", 'i');
     }
     this.setState({

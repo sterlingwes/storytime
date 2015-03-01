@@ -129,10 +129,14 @@ describe('<StoryList />', function() {
     });
     
     it('should allow for creating stories', ()=> {
-      this.search('test');
+      this.search('test :)');
       TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 13, metaKey: true });
       expect(this.listEl.childNodes.length).to.be(4);
       expect(this.isSelected(0)).to.be(true);
+      
+      let story = JSON.parse(localStorage.getItem('st'))[3];
+      expect(story.name).to.be(':)');
+      expect(story.project).to.be('test');
     });
     
     it('should allow for deleting stories', ()=> {
