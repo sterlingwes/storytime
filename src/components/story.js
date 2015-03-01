@@ -19,7 +19,6 @@ module.exports = React.createClass({
     let classes = {
       'st-story': true,
       'st-selected': this.props.isSelected,
-      'st-hidden': !this.props.isVisible,
       'st-timing': this.props.isTiming
     };
     

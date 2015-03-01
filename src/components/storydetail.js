@@ -22,7 +22,7 @@ module.exports = React.createClass({
     switch(e.keyCode) {
       case 37:
         this.headingBack = true;
-        return this.transitionTo('/', null, { select: this.getParams().id });
+        return this.transitionTo('/');
     }
   },
   

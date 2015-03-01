@@ -3,28 +3,45 @@ const React = require('react')
     , Story = require('./story')
     , SearchBar = require('./searchbar')
     , keyEventHandler = require('./')
-    
+    , Actions = require('../data/actions')
     , store = require('../data/index')
+    , _ = require('lodash')
     
     , DEFAULT_SEARCH_REGEX = /.*/
   ;
+
+function getState() {
+  let selection = store.getPref('selection')
+    , stories = store.fetch()
+    , storyIndex = stories.map(story => { return story.id });
+    
+  return {
+    currentTimer: '',
+    selectStory: selection || '',
+    stories: stories,
+    storyIndex: storyIndex
+  };
+}
 
 module.exports = React.createClass({
   
   mixins: [ Router.Navigation, Router.State ],
   
+  //
+  // LIFECYCLE METHODS =========================================================
+  //
+  
   getInitialState() {
-    return {
+    return _.extend({
       currentTimer: '', // points to unique ID of timed story
       returned: false, // indicates we've already handled a return query param to reset the last selection
       searchName: DEFAULT_SEARCH_REGEX,
       searchProj: DEFAULT_SEARCH_REGEX,
       searchhStr: '',
-      stories: this.getStories(),
-      selectIndex: 0,  // index of selected story (based on state.stories order)
       selectStory: '', // unique ID of selected story
-      scrolling: false
-    };
+      scrolling: false,
+      stories: []
+    }, getState());
   },
 
   getDefaultProps() {
@@ -32,8 +49,63 @@ module.exports = React.createClass({
   },
   
   componentDidMount() {
-    store.setListener(()=> { this.setStories() });
+    store.addChangeListener(this.onModelChange);
   },
+  
+  componentWillUnmount() {
+    store.removeChangeListener(this.onModelChange);
+  },
+  
+  //
+  // EVENT HANDLERS ============================================================
+  //
+  
+  onModelChange() {
+    //console.log('onModelChange', arguments, getState());
+    this.setState(getState());
+  },
+  
+  onSearchChange(event) {
+    let q = event.target.value;
+    this.onSearch(q);
+  },
+  
+  onSearchFocus() {
+    this.onSearch();
+  },
+  
+  /*
+   * Fires when the main listview scrolls so that a drop
+   * shadow can be applied to the header
+   */
+  onListScroll(e) {
+    let isScrolling = e.target.scrollTop > 0;
+    this.setState({ scrolling: isScrolling });
+  },
+  
+  /*
+   * onSearch(query) gets called by the SearchBar component to pass along
+   * the latest query and reset the selected item to 0
+   */
+  onSearch(q) {
+    let nameRegex, projRegex;
+    if(!q)  nameRegex = projRegex = DEFAULT_SEARCH_REGEX;
+    else {
+      let qParts = q.split(/\s/)
+        , qProj = qParts.shift();
+      nameRegex = new RegExp("\\b(" + q + ')', 'i');
+      projRegex = new RegExp("\\b(" + qProj + ")", 'i');
+    }
+    this.setState({
+      searchProj: projRegex,
+      searchName: nameRegex,
+      searchStr: q || ''
+    });
+  },
+  
+  //
+  // GETTERS ===================================================================
+  //
   
   /*
    * getList() returns a reference to the listview DOM node
@@ -42,172 +114,17 @@ module.exports = React.createClass({
     return this.refs.list.getDOMNode();
   },
   
-  /*
-   * getStories() handles filtering the story list based on search queries
-   * as well as passing along state such as whether a story is being timed
-   * or is selected
-   */
-  getStories() {
-    let filteredIndex = -1
-      , returned = this.state ? this.state.returned : false
-      , q = this.getQuery();
-      
-    return store.fetch().map( (story,i) => {
-      let visible = this.matchSearch(story);
-      if(visible) filteredIndex++;
-      let selectedIndex = this.state ? this.state.selectIndex : 0;
-
-      // if we're returning, don't default to selecting the first item
-      if(q.select && !returned && selectedIndex === 0) selectedIndex = false;
-
-      // if we're returning from a detail view, reselect that story
-      if(q.select && q.select == story.id && !returned) {
-        returned = true;
-        selectedIndex = filteredIndex;
-      }
-      
-      let isSelected = selectedIndex === filteredIndex;
-      
-      if(isSelected) {
-        this.setState({
-          selectStory: story.id,
-          selectIndex: selectedIndex,
-          returned: returned
-        });
-      }
-      
-      return <Story key={i}
-                  story={story.get('name')}
-                  isSelected={isSelected}
-                  isVisible={visible}
-                  isTiming={this.hasTimer(story.id)}
-                  project={story.get('project')} />;
+  getVisibleStories() {
+    if(!this.state) return [];
+    return this.state.stories.filter(story => {
+      return this.matchSearch(story);
     });
   },
   
-  /*
-   * setStories(callback) is the primary method for forcing a redraw of the
-   * listview by setting the filtered stories to state.stories
-   */
-  setStories(cb) {
-    this.setState({
-      stories: this.getStories()
-    }, ()=> { if(cb) cb(); });
-  },
-  
-  /*
-   * moveSelection(direction) handles keyboard navigation up / down the list
-   * direction should be a +1 or -1
-   */
-  moveSelection(direction) {
-    let current = this.state.selectIndex + direction
-      , max = this.state.stories.length;
-    
-    if(current >= max) current = 0;
-    if(current < 0) current = max - 1;
-    this.setState({ selectIndex: current }, ()=> {
-      this.setStories(()=>{
-        let yPos = this.state.selectIndex * 36
-          , listNode = this.getList();
-        
-        // if we're scrolling from off-top
-        if(yPos < listNode.scrollTop)
-          listNode.scrollTop = yPos - 20;
-          
-        // if we're scrolling from off-bottom
-        if((yPos + 36) >= (listNode.scrollTop + listNode.offsetHeight))
-          listNode.scrollTop = yPos + 36;
-      });
-    });
-  },
-  
-  scrollTop() {
-    this.setState({
-      selectIndex: 0
-    }, () => {
-      this.setStories();
-    });
-  },
-  
-  scrollBottom() {
-    let list = this.getList();
-    list.scrollTop = list.scrollHeight;
-  },
-  
-  /*
-   * startTimer() for the current selected list item, fired by keyPress (enter)
-   */
-  startTimer() {
-    this.stopTimer( lastTimer => {
-      let selectionId = this.state.selectStory;
-      // if the stopped timer equals this list item index, don't restart
-      if(lastTimer === selectionId) return;
-      
-      let target = store.getById(selectionId);
-      if(target) {
-        store.start(selectionId);
-        this.setState({ currentTimer: selectionId }, ()=> {
-          this.setStories();
-          // set the menu label to the current project name
-          quark.setLabel(target.get('project'));
-          // keep the overlay open for a few ms after starting to show change
-          setTimeout(()=> { quark.closePopup() }, 300);
-        });
-      }
-    });
-  },
-  
-  /*
-   * stopTimer(callback) stops any current timers
-   * the callback(lastTimer) passes along the index of the stopped timer
-   */
-  stopTimer(cb) {
-    let startTimer = this.state.currentTimer;
-    if(this.hasTimer()) {
-      // close the open timing session
-      store.stop(startTimer);
-      this.setState({ currentTimer: '' }, ()=> {
-        quark.setLabel('');
-        // refresh the listView
-        this.setStories(cb(startTimer));
-      });
-    }
-    // no currentTimer
-    else cb(startTimer);
-  },
-  
-  /*
-   * deleteSelection() will prompt the user to delete the selected story
-   */
-  deleteSelection() {
-    if(confirm('Are you sure you want to delete this item?')) {
-      store.remove(this.state.selectStory);
-      this.setStories(()=> {
-        this.scrollTop();
-      });
-    }
-  },
-  
-  /*
-   * addStory() adds a story to match the current searchbar input
-   */
-  addStory() {
-    if(!this.state.searchStr) return;
-    
-    let searchParts = this.state.searchStr.split(/\s/)
-      , project = searchParts.shift();
-      
-    if(!searchParts.length) {
-      searchParts.push(project);
-      project = 'Misc';
-    }
-      
-    store.save({
-      project: project,
-      name: searchParts.join(' ')
-    });
-    
-    this.resetSearch();
+  getSelectedIndex() {
+    if(!this.state || !this.state.selectStory) return 0;
+    let selectionIndex = this.state.storyIndex.indexOf(this.state.selectStory);
+    return selectionIndex > -1 ? selectionIndex : 0;
   },
   
   /*
@@ -220,19 +137,54 @@ module.exports = React.createClass({
     return !!this.state.currentTimer;
   },
   
-  showDetail() {
-    this.setState({
-      lastDetail: this.state.selectStory
-    });
-    this.transitionTo('detail', { id: this.state.selectStory });
+  /*
+   * matchSearch(story) takes a story object and checks whether it matches
+   * the current search query regex
+   */
+  matchSearch(story) {
+    if(!this.state) return true;
+    if(this.state.searchName.test(story.get('name'))
+      || this.state.searchProj.test(story.get('project')))
+      return true;
+    
+    return false;
   },
   
+  parseStoryAttributes() {
+    if(!this.state.searchStr) return;
+    
+    let searchParts = this.state.searchStr.split(/\s/)
+      , project = searchParts.shift();
+      
+    if(!searchParts.length) {
+      searchParts.push(project);
+      project = 'Misc';
+    }
+    
+    return [ project, searchParts.join(' ') ];
+  },
+  
+  //
+  // SETTERS ===================================================================
+  //
+  
+  resetSearch() {
+    this.setState({
+      searchName: DEFAULT_SEARCH_REGEX,
+      searchProj: DEFAULT_SEARCH_REGEX,
+      searchStr: '',
+      selectStory: ''
+    });
+  },
+  
+  //
+  // USER ACTIONS ==============================================================
+  //
+
   /*
    * onKeyDown(event) handles all key events in the SearchBar
    */
   onKeyDown(e) {
-    //console.log(e.keyCode, 'ctrl'+e.ctrlKey, 'alt'+e.altKey, 'meta'+e.metaKey, 'shift'+e.shiftKey);
-    
     switch(e.keyCode) {
       case 8:
         if(e.metaKey) this.deleteSelection();
@@ -257,67 +209,124 @@ module.exports = React.createClass({
     }
   },
   
-  /*
-   * onSearch(query) gets called by the SearchBar component to pass along
-   * the latest query and reset the selected item to 0
-   */
-  onSearch(q) {
-    let nameRegex, projRegex;
-    if(!q)  nameRegex = projRegex = DEFAULT_SEARCH_REGEX;
-    else {
-      let qParts = q.split(/\s/)
-        , qProj = qParts.shift();
-      nameRegex = new RegExp("\\b(" + q + ')', 'i');
-      projRegex = new RegExp("\\b(" + qProj + ")", 'i');
+  defaultSelection(action) {
+    if(!this.state) return;
+    let stories = this.state.stories;
+    if(!this.state.selectStory && stories[0]) {
+      this.setState({ selectStory: stories[0].id }, ()=> {
+        action();
+      });
     }
-    this.setState({
-      searchProj: projRegex,
-      searchName: nameRegex,
-      searchStr: q || '',
-      selectIndex: 0
-    }, ()=> {
-      this.setStories();
+    else action();
+  },
+  
+  /*
+   * deleteSelection() will prompt the user to delete the selected story
+   */
+  deleteSelection() {
+    this.defaultSelection(()=>{
+      if(confirm('Are you sure you want to delete this item?')) {
+        Actions.deleteStory(this.state.selectStory);
+        this.scrollTop();
+      }
     });
   },
   
   /*
-   * matchSearch(story) takes a story object and checks whether it matches
-   * the current search query regex
+   * addStory() adds a story to match the current searchbar input
    */
-  matchSearch(story) {
-    if(!this.state) return true;
-    if(this.state.searchName.test(story.get('name'))
-      || this.state.searchProj.test(story.get('project')))
-      return true;
-    
-    return false;
-  },
-
-  resetSearch() {
-    this.setState({
-      searchName: DEFAULT_SEARCH_REGEX,
-      searchProj: DEFAULT_SEARCH_REGEX,
-      searchStr: ''
-    }, ()=> { this.setStories(); });
+  addStory() {
+    Actions.addStory.apply(null, this.parseStoryAttributes());
+    this.resetSearch();
   },
   
-  searchChange(event) {
-    let q = event.target.value;
-    this.onSearch(q);
-  },
-  
-  searchFocused() {
-    this.onSearch();
+  showDetail() {
+    this.defaultSelection(()=> {
+      this.setState({
+        lastDetail: this.state.selectStory
+      });
+      if(this.state.selectStory)
+          this.transitionTo('detail', { id: this.state.selectStory });
+    });
   },
   
   /*
-   * scrolled(event) fires when the main listview scrolls so that a drop
-   * shadow can be applied to the header
+   * moveSelection(direction) handles keyboard navigation up / down the list
+   * direction should be a +1 or -1
    */
-  scrolled(e) {
-    let isScrolling = e.target.scrollTop > 0;
-    this.setState({ scrolling: isScrolling });
+  moveSelection(direction) {
+    let current = this.getSelectedIndex() + direction
+      , max = this.state.stories.length;
+    
+    if(current >= max) current = 0;
+    if(current < 0) current = max - 1;
+    
+    Actions.setSelection(this.state.storyIndex[current]);
+    
+    let yPos = current * 36
+      , listNode = this.getList();
+    
+    // if we're scrolling from off-top
+    if(yPos < listNode.scrollTop)
+      listNode.scrollTop = yPos - 20;
+      
+    // if we're scrolling from off-bottom
+    if((yPos + 36) >= (listNode.scrollTop + listNode.offsetHeight))
+      listNode.scrollTop = yPos + 36;
   },
+  
+  scrollTop() {
+    Actions.setSelection(this.state.stories[0].id);
+  },
+  
+  scrollBottom() {
+    let list = this.getList();
+    list.scrollTop = list.scrollHeight;
+  },
+  
+  /*
+   * startTimer() for the current selected list item, fired by keyPress (enter)
+   */
+  startTimer() {
+    this.stopTimer( lastTimer => {
+      let selectionId = this.state.selectStory;
+      // if the stopped timer equals this list item index, don't restart
+      if(lastTimer === selectionId) return;
+      
+      let target = store.getById(selectionId);
+      if(target) {
+        store.start(selectionId);
+        this.setState({ currentTimer: selectionId }, ()=> {
+          // set the menu label to the current project name
+          quark.setLabel(target.get('project'));
+          // keep the overlay open for a few ms after starting to show change
+          setTimeout(()=> { quark.closePopup() }, 300);
+        });
+      }
+    });
+  },
+  
+  /*
+   * stopTimer(callback) stops any current timers
+   * the callback(lastTimer) passes along the index of the stopped timer
+   */
+  stopTimer(cb) {
+    let startTimer = this.state.currentTimer;
+    if(this.hasTimer()) {
+      // close the open timing session
+      store.stop(startTimer);
+      this.setState({ currentTimer: '' }, ()=> {
+        quark.setLabel('');
+        cb(startTimer);
+      });
+    }
+    // no currentTimer
+    else cb(startTimer);
+  },
+  
+  //
+  // RENDERING & RENDER HELPERS ================================================
+  //
   
   render() {
     
@@ -325,8 +334,8 @@ module.exports = React.createClass({
     
     if(this.state.stories.length) {
       list = (
-        <div ref="list" className="st-storylist" onScroll={this.scrolled}>
-          { this.state.stories }
+        <div ref="list" className="st-storylist" onScroll={this.onListScroll}>
+          { this.storyItems() }
         </div>
       );
     }
@@ -347,13 +356,29 @@ module.exports = React.createClass({
       <div className="st-main">
         <SearchBar
           onSearch={this.onSearch}
-          onChange={this.searchChange}
-          onFocus={this.searchFocused}
+          onChange={this.onSearchChange}
+          onFocus={this.onSearchFocus}
           keyHandler={this.onKeyDown}
           query={this.state.searchStr}
           isScrolling={this.state.scrolling} />
         { list }
       </div>
     );
-  }
+  },
+  
+  /*
+   * getStories() handles filtering the story list based on search queries
+   * as well as passing along state such as whether a story is being timed
+   * or is selected
+   */
+  storyItems() {
+    let selectedIndex = this.getSelectedIndex();
+    return this.getVisibleStories().map( (story,i) => {
+      return <Story key={i}
+                  story={story.get('name')}
+                  isSelected={selectedIndex === i}
+                  isTiming={this.hasTimer(story.id)}
+                  project={story.get('project')} />;
+    });
+  },
 })

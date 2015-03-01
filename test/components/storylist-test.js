@@ -1,8 +1,7 @@
 import dom from "../support/dom" // must load before React
 
 import React from "react/addons"
-import expect from "expect.js"
-import sinon from "sinon"
+import { expect, sinon } from "../support/tools"
 import Store from "../../src/data/store"
 
 const TestUtils = React.addons.TestUtils
@@ -62,20 +61,15 @@ describe('<StoryList />', function() {
   
   describe('searching', ()=> {
     it('should hide stories that do not match the query', ()=> {
-      let hiddenStories = 0
-        , nodeList = this.listEl.childNodes;
+      let nodeList = this.listEl.childNodes;
       this.search('one');
-      for(let ni = 0; ni < nodeList.length; ni++) {
-        let node = nodeList[ni];
-        if(node.className.indexOf('hidden') >= 0) hiddenStories++;
-      }
-      expect(nodeList[0].className.indexOf('st-selected')>=0).to.be(true);
-      expect(hiddenStories).to.be(1);
-      expect(nodeList.length - hiddenStories).to.be(2);
+      expect(nodeList).to.have.length(2);
+      this.search('two');
+      expect(nodeList).to.have.length(1);
     });
     
     it('should set an empty search when the input first receives focus', ()=> {
-      expect(this.renderedComponent.state.searchStr).to.be('one');
+      expect(this.renderedComponent.state.searchStr).to.be('two');
       TestUtils.Simulate.focus(this.inputEl);
       expect(this.renderedComponent.state.searchStr).to.be('');
     });

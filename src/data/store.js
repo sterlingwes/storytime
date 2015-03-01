@@ -1,12 +1,21 @@
+import EventEmitter from "events";
+import assign from "object-assign";
+import Dispatcher from "./dispatcher";
 import Story from "../models/story";
 import _ from "lodash";
+import ActionHandlers from "./action_handlers";
+import Actions from "./constants";
 
-const StoreName = 'st';
+const StoreName = 'st'
+    , Events = { CHANGE: 'change' };
 
 class StoryStore {
   constructor(initRecords, changeListener) {
+    assign(this, EventEmitter.EventEmitter.prototype);
+    
     this.storeName = StoreName;
     this.stories = [];
+    this.prefs = {};
     this.changeListener = changeListener;
     
     this.index = {};
@@ -16,6 +25,8 @@ class StoryStore {
       this.clearAll();
       this.resetListener();
     });
+    
+    this.registerDispatcher();
   }
   
   setListener(changeListener) {
@@ -44,16 +55,34 @@ class StoryStore {
   }
   
   add(storyProps, index) {
-    let id = this.guid();
+    let id = this.guid()
+      , story = new Story(storyProps, id);
     this.index[id] = index || this.count();
-    this.stories.push(new Story(storyProps, id));
+    this.stories.push(story);
     this.persist();
+    return story;
   }
   
   remove(id) {
-    if(!this.index[id]) return false;
+    if(typeof this.index[id] === 'undefined') return false;
     this.stories.splice(this.index[id],1);
+    this.reindex();
     this.persist();
+  }
+  
+  reindex() {
+    this.index = {};
+    this.stories.forEach((story,indx) => {
+      this.index[story.id] = indx;
+    });
+  }
+  
+  getPref(key) {
+    return localStorage.getItem([StoreName,key].join('-'));
+  }
+  
+  setPref(key,val) {
+    localStorage.setItem([StoreName,key].join('-'), val);
   }
   
   /*
@@ -61,12 +90,14 @@ class StoryStore {
    * and sets up the index
    */
   save(stories) {
+    let addedStories = [];
     if(stories && !_.isArray(stories)) stories = [stories];
     (stories || []).forEach( (storyProps, index) => {
-      this.add(storyProps, index);
+      addedStories.push(this.add(storyProps, index));
     });
     
     this.persist();
+    return addedStories;
   }
   
   persist() {
@@ -121,6 +152,32 @@ class StoryStore {
       return v.toString(16);
     });
   }
+  
+  //
+  // Flux Event Handling =======================================================
+  //
+
+  emitChange() {
+    let args = Array.prototype.slice.call(arguments);
+    args.unshift(Events.CHANGE);
+    this.emit.apply(this,args);
+  }
+  
+  addChangeListener(cb) {
+    this.on(Events.CHANGE, cb);
+  }
+  
+  removeChangeListener(cb) {
+    this.removeListener(Events.CHANGE, cb);
+  }
+  
+  registerDispatcher() {
+    this.dispatcherIndex = Dispatcher.register(payload => {
+      let isChange = ActionHandlers.send(this, payload);
+      if(isChange !== false) this.emitChange(payload);
+    });
+  }
+  
 }
 
 module.exports = StoryStore;

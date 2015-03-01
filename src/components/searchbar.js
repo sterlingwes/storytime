@@ -34,6 +34,7 @@ module.exports = React.createClass({
           onFocus={this.props.onFocus}
           onKeyDown={this.props.keyHandler}
           value={searchVal}
+          autoComplete="off"
           autofocus />
         <i className="icon-cog rotate" onClick={this.showPrefs} />
       </div>
