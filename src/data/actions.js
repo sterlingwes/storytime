@@ -25,6 +25,20 @@ let Actions = {
     });
   },
   
+  startTimer(storyId) {
+    Dispatcher.dispatch({
+      actionType: Constants.START_TIMER,
+      storyId: storyId
+    });
+  },
+  
+  stopTimer(storyId) {
+    Dispatcher.dispatch({
+      actionType: Constants.STOP_TIMER,
+      storyId: storyId
+    });
+  }
+  
 };
 
 module.exports = Actions;

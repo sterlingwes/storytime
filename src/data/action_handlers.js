@@ -35,9 +35,17 @@ const ActionHandler = {
     this.remove(payload.storyId);
   },
   
-  addSession(payload) {
-
-  }
+  startTimer(payload) {
+    this.start(payload.storyId);
+    this.setPref('current', payload.storyId);
+  },
+  
+  stopTimer(payload) {
+    this.stop(payload.storyId);
+    this.setPref('current', '');
+  },
+  
+  addSession(payload) {}
   
 }
 

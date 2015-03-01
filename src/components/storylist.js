@@ -12,11 +12,12 @@ const React = require('react')
 
 function getState() {
   let selection = store.getPref('selection')
+    , currentTimer = store.getPref('current')
     , stories = store.fetch()
     , storyIndex = stories.map(story => { return story.id });
     
   return {
-    currentTimer: '',
+    currentTimer: currentTimer || '',
     selectStory: selection || '',
     stories: stories,
     storyIndex: storyIndex
@@ -288,40 +289,33 @@ module.exports = React.createClass({
    * startTimer() for the current selected list item, fired by keyPress (enter)
    */
   startTimer() {
-    this.stopTimer( lastTimer => {
-      let selectionId = this.state.selectStory;
-      // if the stopped timer equals this list item index, don't restart
-      if(lastTimer === selectionId) return;
-      
-      let target = store.getById(selectionId);
-      if(target) {
-        store.start(selectionId);
-        this.setState({ currentTimer: selectionId }, ()=> {
-          // set the menu label to the current project name
-          quark.setLabel(target.get('project'));
-          // keep the overlay open for a few ms after starting to show change
-          setTimeout(()=> { quark.closePopup() }, 300);
-        });
-      }
-    });
+    let selectionId = this.state.selectStory
+      , lastTimer = this.stopTimer();
+    // if the stopped timer equals this list item index, don't restart
+    if(lastTimer === selectionId) return;
+    
+    let target = store.getById(selectionId);
+    if(target) {
+      Actions.startTimer(selectionId);
+      // set the menu label to the current project name
+      quark.setLabel(target.get('project'));
+      // keep the overlay open for a few ms after starting to show change
+      setTimeout(()=> { quark.closePopup() }, 300);
+    }
   },
   
   /*
-   * stopTimer(callback) stops any current timers
-   * the callback(lastTimer) passes along the index of the stopped timer
+   * stopTimer stops any current timers
+   * returns the timer that was stopped
    */
-  stopTimer(cb) {
+  stopTimer() {
     let startTimer = this.state.currentTimer;
     if(this.hasTimer()) {
       // close the open timing session
-      store.stop(startTimer);
-      this.setState({ currentTimer: '' }, ()=> {
-        quark.setLabel('');
-        cb(startTimer);
-      });
+      Actions.stopTimer(startTimer);
+      quark.setLabel('');
     }
-    // no currentTimer
-    else cb(startTimer);
+    return startTimer;
   },
   
   //

@@ -3,7 +3,9 @@ const actions = [
   'DELETE_STORY',
   'ADD_SESSION',
   'DESTROY_SESSION',
-  'SET_SELECTION'
+  'SET_SELECTION',
+  'START_TIMER',
+  'STOP_TIMER'
 ]
 
 let constantMapping = {};
