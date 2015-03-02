@@ -10,17 +10,19 @@ const TestUtils = React.addons.TestUtils;
 describe('<SearchBar />', function() {
   
   before('render and locate element', ()=> {
-    //
-    // this.onSearchFn = sinon.spy();
-    // this.onKeyFn = sinon.spy();
-    // this.onScrollFn = sinon.spy();
+    
+    this.onSearchFn = sinon.spy();
+    this.onKeyFn = sinon.spy();
+    this.onScrollFn = sinon.spy();
+    this.addHint = sinon.spy();
     
     var renderTarget = document.getElementsByTagName('body')[0]
       , renderedComponent = React.render(
           <SearchBar
             onSearch={this.onSearchFn}
             keyHandler={this.onKeyFn}
-            isScrolling={this.onScrollFn} />,
+            isScrolling={this.onScrollFn}
+            addHint={this.addHint} />,
           renderTarget
         );
         

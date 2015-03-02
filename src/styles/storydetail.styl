@@ -6,13 +6,13 @@
     display block
   
   .st-detail-project
-    color #888
+    color blue_strong
     font-size 0.85em
     text-transform uppercase
     margin-bottom 5px
     
   .st-detail-name
-    color #3D7DA5
+    color blue_emphasis
     font-size 1.1em
     padding-bottom 8px
     border-bottom 1px solid #ddd
@@ -36,12 +36,13 @@
       
       &:before
         content "\2014"
-        color #DDD
+        color blue_border
       
       &.st-storysession-active
-        color #3D7DA5
+        color blue_strong
         
         &:before
-          color #3D7DA5
+          color blue_strong
           font-family "icomoon"
           content "\e052"
+          -webkit-animation flickerAnimation 1s infinite

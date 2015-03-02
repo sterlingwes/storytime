@@ -20,8 +20,8 @@ module.exports = React.createClass({
       'st-storysession-active': this.props.isTiming
     };
     
-    let dayLabel = moment(this.props.day).format('M.D')
-      , hours = Math.round(this.props.hours * 10) / 10;
+    let dayLabel = moment(this.props.day).format('M/DD')
+      , hours = Math.round(this.props.hours * 100) / 100;
     
     return (
       <li className={cx(classes)}>

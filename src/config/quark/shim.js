@@ -10,7 +10,9 @@ module.exports = [
   'openPopup',
   'closePopup',
   'on',
-  'emit'
+  'emit',
+  'pin',
+  'unpin'
 ].reduce((m,k) => {
   m[k] = noop;
   return m;

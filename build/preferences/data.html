@@ -50,6 +50,10 @@
         quark.emit('clearData');
       }
     };
+    
+    quark.on('change', function() {
+      textarea.innerHTML = localStorage.getItem('st');
+    });
   </script>
 </body>
 </html>

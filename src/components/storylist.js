@@ -16,6 +16,9 @@ function getState() {
     , stories = store.fetch()
     , storyIndex = stories.map(story => { return story.id });
     
+  if(!_.any(stories, story=> { return story.id === selection }))
+    selection = stories.length ? stories[0].id : '';
+    
   return {
     currentTimer: currentTimer || '',
     selectStory: selection || '',
@@ -62,7 +65,7 @@ module.exports = React.createClass({
   //
   
   onModelChange() {
-    //console.log('onModelChange', arguments, getState());
+    console.log('onModelChange', arguments, getState());
     this.setState(getState());
   },
   
@@ -203,7 +206,8 @@ module.exports = React.createClass({
         if(e.metaKey) return this.scrollTop();
         return this.moveSelection(-1);
       case 39: // right
-        return this.showDetail()
+        this.showDetail();
+        return e.preventDefault();
       case 40: // down
         if(e.metaKey) return this.scrollBottom();
         return this.moveSelection(1);
@@ -227,10 +231,12 @@ module.exports = React.createClass({
    */
   deleteSelection() {
     this.defaultSelection(()=>{
+      quark.pin();
       if(confirm('Are you sure you want to delete this item?')) {
         Actions.deleteStory(this.state.selectStory);
         this.scrollTop();
-      }
+        quark.unpin();
+      } else quark.unpin();
     });
   },
   
@@ -337,11 +343,13 @@ module.exports = React.createClass({
     else {
       list = (
         <div className="st-storylist-empty">
-          <div><i className="icon-speech-bubble"></i> Welcome!</div>
+          <div><i className="icon-speech-bubble"></i> Hey!</div>
           <div className="small">
-            Try adding a new story with <b><i className="icon-command"></i> + Enter</b>
+            Use your keyboard to get around StoryTime. You can start by typing above.
             <br/><br/>
-            See the preferences <b>Shortcuts</b> tab for more
+            Use <b><i className="icon-command"></i> + L</b> to focus the search box.
+            <br/><br/>
+            See the <i className="icon-cog"></i> > <b>Shortcuts</b> tab for more helpful hints.
           </div>
         </div>
       );
@@ -355,6 +363,7 @@ module.exports = React.createClass({
           onFocus={this.onSearchFocus}
           keyHandler={this.onKeyDown}
           query={this.state.searchStr}
+          addHint={this.addHint}
           isScrolling={this.state.scrolling} />
         { list }
       </div>
@@ -375,5 +384,18 @@ module.exports = React.createClass({
                   isTiming={this.hasTimer(story.id)}
                   project={story.get('project')} />;
     });
+  },
+  
+  addHint() {
+    if(!this.state || !this.state.searchStr) return;
+    let parts = this.parseStoryAttributes();
+    return (
+      <div className="st-search-hint">
+        <i className="icon-arrow-up"></i> Use&nbsp;
+        <b><i className="icon-command"></i> + Enter</b> to add&nbsp;
+        <b>{parts[1]}</b> to the&nbsp;
+        <b>{parts[0]}</b> project
+      </div>
+    );
   },
 })

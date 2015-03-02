@@ -37,6 +37,7 @@ module.exports = React.createClass({
           autoComplete="off"
           autofocus />
         <i className="icon-cog rotate" onClick={this.showPrefs} />
+        { this.props.addHint() }
       </div>
     );
   }

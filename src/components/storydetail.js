@@ -22,7 +22,8 @@ module.exports = React.createClass({
     switch(e.keyCode) {
       case 37:
         this.headingBack = true;
-        return this.transitionTo('/');
+        this.transitionTo('/');
+        return e.preventDefault();
     }
   },
   

@@ -23,19 +23,10 @@ class StoryStore {
     
     quark.on('clearData', ()=> {
       this.clearAll();
-      this.resetListener();
+      this.emitChange();
     });
     
     this.registerDispatcher();
-  }
-  
-  setListener(changeListener) {
-    this.changeListener = changeListener;
-  }
-  
-  resetListener() {
-    if(typeof this.changeListener === 'function')
-      this.changeListener();
   }
   
   fetch() {
@@ -130,7 +121,8 @@ class StoryStore {
   
   clearAll() {
     this.stories = [];
-    localStorage.setItem(StoreName, undefined);
+    localStorage.setItem(StoreName, '[]');
+    this.emitChange();
   }
   
   read() {
@@ -161,6 +153,7 @@ class StoryStore {
     let args = Array.prototype.slice.call(arguments);
     args.unshift(Events.CHANGE);
     this.emit.apply(this,args);
+    quark.emit.apply(quark,args);
   }
   
   addChangeListener(cb) {

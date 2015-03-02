@@ -58,7 +58,7 @@ class Story {
       let lastDate = sesh.end || m()
         , diff = lastDate - sesh.start;
         
-      days[day].hours += Math.round(diff / HOURS_FROM_MILLISECONDS * 10) / 10;
+      days[day].hours += Math.round(diff / HOURS_FROM_MILLISECONDS * 100) / 100;
       days[day].minutes += Math.round(diff / MINUTES_FROM_MILLISECONDS);
       if(!sesh.end) days[day].isOpen = true;
     });

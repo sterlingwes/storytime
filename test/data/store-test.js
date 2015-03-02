@@ -102,9 +102,12 @@ describe('Store class', function() {
   
   describe('clearAll()', ()=> {
     it('should clear the localstorage', ()=> {
-      expect(localStorage.getItem('st')).to.eql('[]');
+      this.store.save({name:'something'});
+      expect(localStorage.getItem('st')).to.eql(JSON.stringify([{
+        name: 'something', hours: []
+      }]));
       this.store.clearAll();
-      expect(localStorage.getItem('st')).to.eql(undefined);
+      expect(localStorage.getItem('st')).to.eql('[]');
     });
   });
 })

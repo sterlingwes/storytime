@@ -9,19 +9,27 @@
     -webkit-transform scale(1, 1)
     opacity 1
 
+@-webkit-keyframes flickerAnimation
+  0%
+    opacity 1
+  50%
+    opacity 0
+  100%
+    opacity 1
+
 .st-story
   position relative
   padding 10px
-  background-color #f0f0f0
-  border-bottom 1px solid #ccc
+  background-color blue_faded
+  border-bottom 1px solid #fff
   color #555
-  transition-property background-color, color
-  transition-duration 0.3s
-  opacity 1
-  
+    
   &.st-selected
-    background-color #C4E2F4
-    color #3D7DA5
+    background-color blue_light
+    color blue_emphasis
+    
+    .st-projectlabel
+      color blue_strong
     
     &:after
       position absolute
@@ -55,6 +63,6 @@
     
     i.icon-play
       display inline-block
-      -webkit-animation grow 0.3s ease-out
+      -webkit-animation flickerAnimation 1s infinite
       position relative
       font-size 1.4em
