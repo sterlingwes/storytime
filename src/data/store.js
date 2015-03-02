@@ -30,7 +30,7 @@ class StoryStore {
   }
   
   fetch() {
-    return this.stories.slice(0).sort();
+    return this.stories.slice(0).sort().reverse();
   }
   
   count() {

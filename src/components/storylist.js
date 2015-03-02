@@ -65,7 +65,7 @@ module.exports = React.createClass({
   //
   
   onModelChange() {
-    console.log('onModelChange', arguments, getState());
+    //console.log('onModelChange', arguments, getState());
     this.setState(getState());
   },
   
