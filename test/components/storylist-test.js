@@ -132,7 +132,7 @@ describe('<StoryList />', function() {
       this.search('test :)');
       TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 13, metaKey: true });
       expect(this.listEl.childNodes.length).to.be(4);
-      expect(this.isSelected(0)).to.be(true);
+      expect(this.isSelected(3)).to.be(true);
       
       let story = JSON.parse(localStorage.getItem('st'))[3];
       expect(story.name).to.be(':)');
@@ -143,7 +143,7 @@ describe('<StoryList />', function() {
       TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 8, metaKey: true });
       expect(this.listEl.childNodes.length).to.be(3);
       let storyNames = JSON.parse(localStorage.getItem('st')).map(story => { return story.name });
-      expect(storyNames).to.eql(['Planning','Support',':)']);
+      expect(storyNames).to.eql(['Planning','Support','Planning']);
     });
   });
 })

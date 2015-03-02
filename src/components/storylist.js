@@ -10,23 +10,6 @@ const React = require('react')
     , DEFAULT_SEARCH_REGEX = /.*/
   ;
 
-function getState() {
-  let selection = store.getPref('selection')
-    , currentTimer = store.getPref('current')
-    , stories = store.fetch()
-    , storyIndex = stories.map(story => { return story.id });
-    
-  if(!_.any(stories, story=> { return story.id === selection }))
-    selection = stories.length ? stories[0].id : '';
-    
-  return {
-    currentTimer: currentTimer || '',
-    selectStory: selection || '',
-    stories: stories,
-    storyIndex: storyIndex
-  };
-}
-
 module.exports = React.createClass({
   
   mixins: [ Router.Navigation, Router.State ],
@@ -34,6 +17,23 @@ module.exports = React.createClass({
   //
   // LIFECYCLE METHODS =========================================================
   //
+  
+  getState() {
+    let selection = store.getPref('selection')
+      , currentTimer = store.getPref('current')
+      , stories = this.getVisibleStories()
+      , storyIndex = stories.map(story => { return story.id });
+      
+    if(!_.any(stories, story=> { return story.id === selection }))
+      selection = stories.length ? stories[0].id : '';
+      
+    return {
+      currentTimer: currentTimer || '',
+      selectStory: selection || '',
+      stories: stories,
+      storyIndex: storyIndex
+    };
+  },
   
   getInitialState() {
     return _.extend({
@@ -45,7 +45,7 @@ module.exports = React.createClass({
       selectStory: '', // unique ID of selected story
       scrolling: false,
       stories: []
-    }, getState());
+    }, this.getState());
   },
 
   getDefaultProps() {
@@ -64,9 +64,10 @@ module.exports = React.createClass({
   // EVENT HANDLERS ============================================================
   //
   
-  onModelChange() {
-    //console.log('onModelChange', arguments, getState());
-    this.setState(getState());
+  onModelChange(payload) {
+    this.setState(this.getState(), ()=> {
+      //console.log('onModelChange', arguments[0], this.state);
+    });
   },
   
   onSearchChange(event) {
@@ -101,10 +102,13 @@ module.exports = React.createClass({
       nameRegex = new RegExp("\\b(" + qRegXSafe + ')', 'i');
       projRegex = new RegExp("\\b(" + qProj + ")", 'i');
     }
+
     this.setState({
       searchProj: projRegex,
       searchName: nameRegex,
       searchStr: q || ''
+    }, ()=>{
+      this.onModelChange();
     });
   },
   
@@ -120,8 +124,7 @@ module.exports = React.createClass({
   },
   
   getVisibleStories() {
-    if(!this.state) return [];
-    return this.state.stories.filter(story => {
+    return store.fetch().filter(story => {
       return this.matchSearch(story);
     });
   },
@@ -173,13 +176,13 @@ module.exports = React.createClass({
   // SETTERS ===================================================================
   //
   
-  resetSearch() {
+  resetSearch(cb) {
     this.setState({
       searchName: DEFAULT_SEARCH_REGEX,
       searchProj: DEFAULT_SEARCH_REGEX,
       searchStr: '',
       selectStory: ''
-    });
+    }, ()=> { if(typeof cb === 'function') cb(); });
   },
   
   //
@@ -244,8 +247,10 @@ module.exports = React.createClass({
    * addStory() adds a story to match the current searchbar input
    */
   addStory() {
-    Actions.addStory.apply(null, this.parseStoryAttributes());
-    this.resetSearch();
+    let storyProps = this.parseStoryAttributes();
+    this.resetSearch(()=> {
+      Actions.addStory.apply(null, storyProps);
+    });
   },
   
   showDetail() {
@@ -343,13 +348,15 @@ module.exports = React.createClass({
     else {
       list = (
         <div className="st-storylist-empty">
-          <div><i className="icon-speech-bubble"></i> Hey!</div>
+          <div><i className="icon-clock"></i></div>
           <div className="small">
-            Use your keyboard to get around StoryTime. You can start by typing above.
+            Use your keyboard to get around StoryTime.
             <br/><br/>
-            Use <b><i className="icon-command"></i> + L</b> to focus the search box.
+            <b><i className="icon-command"></i> + L</b> will focus the search box if lost.
             <br/><br/>
-            See the <i className="icon-cog"></i> > <b>Shortcuts</b> tab for more helpful hints.
+            When adding a story, the first whole word is the project name.
+            <br/><br/>
+            <i className="icon-cog"></i> > <b>Shortcuts</b> for more helpful hints.
           </div>
         </div>
       );
@@ -377,7 +384,7 @@ module.exports = React.createClass({
    */
   storyItems() {
     let selectedIndex = this.getSelectedIndex();
-    return this.getVisibleStories().map( (story,i) => {
+    return this.state.stories.map( (story,i) => {
       return <Story key={i}
                   story={story.get('name')}
                   isSelected={selectedIndex === i}
@@ -388,13 +395,11 @@ module.exports = React.createClass({
   
   addHint() {
     if(!this.state || !this.state.searchStr) return;
+    if(this.state.stories.length) return;
     let parts = this.parseStoryAttributes();
     return (
       <div className="st-search-hint">
-        <i className="icon-arrow-up"></i> Use&nbsp;
-        <b><i className="icon-command"></i> + Enter</b> to add&nbsp;
-        <b>{parts[1]}</b> to the&nbsp;
-        <b>{parts[0]}</b> project
+        <i className="icon-arrow-up"></i> Use <b><i className="icon-command"></i> + Enter</b> to add <b>{parts[1]}</b> to the <b>{parts[0]}</b> project
       </div>
     );
   },

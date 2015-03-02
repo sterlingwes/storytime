@@ -21,7 +21,7 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, loaders: ['react-hot', 'babel'], exclude: /node_modules/ },
+      { test: /\.jsx?$/, loaders: ['react-hot', 'babel'], exclude: /node_modules/ },
       { test: /\.styl$/, loaders: ['style', 'css', 'stylus'], exclude: /node_modules/ },
       { test: /\.(ttf|eot|svg|woff)/, loaders: ['url'] },
       { test: /\.png/, loaders: ['url?limit=100000'] }

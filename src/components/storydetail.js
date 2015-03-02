@@ -75,6 +75,9 @@ module.exports = React.createClass({
           ref="keyInput"
           onKeyDown={this.key}
           onBlur={this.refocus} />
+        <div className="st-detail-footer">
+          Days with less than 0.01 hours are ignored.
+        </div>
       </div>
     );
   }
