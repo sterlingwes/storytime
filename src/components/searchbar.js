@@ -17,6 +17,13 @@ module.exports = React.createClass({
     quark.openPreferences();
   },
   
+  quit() {
+    quark.pin();
+    if(confirm('Exit Storytime?')) {
+      quark.quit();
+    } else quark.unpin();
+  },
+  
   render() {
     let searchVal = this.props.query
       , classes = { 'st-search': true };
@@ -37,6 +44,7 @@ module.exports = React.createClass({
           autoComplete="off"
           autofocus />
         <i className="icon-cog rotate" onClick={this.showPrefs} />
+        <i className="icon-cross" onClick={this.quit} />
         { this.props.addHint() }
       </div>
     );

@@ -11,21 +11,30 @@
     box-shadow 0 2px 3px rgba(0,0,0,0.1)
   
   input
-    width 100%
+    width 84%
     padding 15px 0px
     font-size 1.1em
     border 0
     outline none
     
-  i.icon-cog
+  i
     position absolute
     top 14px
-    right 15px
     font-size 1.3em
     color blue_border
     padding 0 5px
     height 25px
     line-height 1.4em
+    cursor pointer
+    
+    &:hover
+      color blue_emphasis
+    
+    &.icon-cog
+      right 30px
+    
+    &.icon-cross
+      right 5px
     
   .rotate
     -webkit-transition-duration 0.8s
@@ -33,8 +42,6 @@
     overflow hidden
     
   .rotate:hover
-    cursor pointer
-    color blue_emphasis
     -webkit-transform rotate(180deg)
     -moz-transform rotate(180deg)
     -o-transform rotate(180deg)

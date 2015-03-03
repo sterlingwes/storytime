@@ -13,7 +13,8 @@ module.exports = [
   'emit',
   'pin',
   'unpin',
-  'checkUpdate'
+  'checkUpdate',
+  'quit'
 ].reduce((m,k) => {
   m[k] = noop;
   return m;
