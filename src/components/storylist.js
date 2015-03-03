@@ -44,7 +44,8 @@ module.exports = React.createClass({
       searchhStr: '',
       selectStory: '', // unique ID of selected story
       scrolling: false,
-      stories: []
+      stories: [],
+      transitioning: false
     }, this.getState());
   },
 
@@ -256,10 +257,12 @@ module.exports = React.createClass({
   showDetail() {
     this.defaultSelection(()=> {
       this.setState({
-        lastDetail: this.state.selectStory
+        lastDetail: this.state.selectStory,
+        transitioning: true
       });
-      if(this.state.selectStory)
-          this.transitionTo('detail', { id: this.state.selectStory });
+      if(this.state.selectStory) {
+        this.transitionTo('detail', { id: this.state.selectStory });
+      }
     });
   },
   
@@ -371,7 +374,8 @@ module.exports = React.createClass({
           keyHandler={this.onKeyDown}
           query={this.state.searchStr}
           addHint={this.addHint}
-          isScrolling={this.state.scrolling} />
+          isScrolling={this.state.scrolling}
+          isTransitioning={this.state.transitioning} />
         { list }
       </div>
     );

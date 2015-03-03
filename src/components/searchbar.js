@@ -17,6 +17,11 @@ module.exports = React.createClass({
     quark.openPreferences();
   },
   
+  onUnFocus() {
+    if(!this.props.isTransitioning)
+      this.refs.searchInput.getDOMNode().focus();
+  },
+  
   quit() {
     quark.pin();
     if(confirm('Exit Storytime?')) {
@@ -39,6 +44,7 @@ module.exports = React.createClass({
           placeholder="Type your Project or Story"
           onChange={this.props.onChange}
           onFocus={this.props.onFocus}
+          onBlur={this.onUnFocus}
           onKeyDown={this.props.keyHandler}
           value={searchVal}
           autoComplete="off"
