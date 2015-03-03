@@ -12,10 +12,7 @@ quark.addKeyboardShortcut({
 
 quark.setupPreferences([
   {
-    "label": "Data", "identifier": "data", "icon": "NSPreferencesGeneral", "height": 280,
-  },
-  {
-    "label": "Shortcuts", "identifier": "shortcut", "icon": "NSAdvanced", "height": 250,
+    "label": "Shortcuts", "identifier": "shortcut", "icon": "NSPreferencesGeneral", "height": 250,
     "nativeComponents": [{
         type: "ShortcutRecorder",
         options: {
@@ -36,5 +33,11 @@ quark.setupPreferences([
             }
         }
     }]
+  },
+  {
+    "label": "Data", "identifier": "data", "icon": "AllMyFiles", "height": 280
+  },
+  {
+    "label": "Updates", "identifier": "update", "icon": "SidebarDownloadsFolder", "height": 60
   }
 ]);
