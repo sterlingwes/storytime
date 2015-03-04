@@ -1,6 +1,6 @@
 import React from "react";
 import Router from "react-router";
-import StoryDetailSession from "./storysession.js";
+import StoryDetailSession from "./storysession";
 
 const cx = React.addons.classSet
     , store = require('../data/index');
