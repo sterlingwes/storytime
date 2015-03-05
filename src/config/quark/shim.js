@@ -19,4 +19,4 @@ module.exports = [
 ].reduce((m,k) => {
   m[k] = noop;
   return m;
-}, {});
+}, { isShim: true });

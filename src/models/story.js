@@ -11,7 +11,8 @@ class Story {
     let latestPeriod = 0;
     this.props.hours = this.props.hours || [];
     this.props.hours = this.props.hours.map(period => {
-      if(period.end > latestPeriod) latestPeriod = period.end;
+      let sortBasis = period.end || period.start;
+      if(sortBasis > latestPeriod) latestPeriod = sortBasis;
       return {
         start: m(period.start),
         end: m(period.end)

@@ -18,7 +18,6 @@ module.exports = React.createClass({
       , data = store.getByDate();
     
     let hours = store.getByDate(params.month, params.day) || [];
-    console.log(hours);
     return hours;
   },
   
@@ -49,7 +48,8 @@ module.exports = React.createClass({
   consolidateSessions() {
     if(!this.state || !this.state.hours) return [];
     return this.state.hours.map(storyHours => {
-      return <li>{ storyHours.hours } - { storyHours.project } { storyHours.name }</li>;
+      let hrs = Math.round(storyHours.hours * 10) / 10;
+      return <li className="vertical">{ hrs } - <i>{ storyHours.project }</i> { storyHours.name }</li>;
     });
   },
   

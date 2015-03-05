@@ -55,9 +55,15 @@
       padding-left 0em
       text-indent .2em
       
-    &.vertical
-      li
+      &.vertical
         display block
+        overflow hidden
+        text-overflow ellipsis
+        white-space nowrap
+          
+        i
+          font-style normal
+          color #777
       
       &:before
         content "\2014"
