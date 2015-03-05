@@ -1,5 +1,6 @@
 import React from "react";
 import moment from "moment";
+import _ from "lodash";
 
 var DayNames = React.createClass({
   render: function() {
@@ -18,6 +19,13 @@ var DayNames = React.createClass({
 });
 
 var Week = React.createClass({
+  dayHours(m,d) {
+    let a = this.props.data || {}
+      , hours = a[m] && a[m][d] && a[m][d].hours;
+
+    if(_.isNumber(hours)) return <span className="st-calhours">{hours}</span>;
+  },
+  
   render: function() {
     var days = [],
     date = this.props.date,
@@ -31,7 +39,13 @@ var Week = React.createClass({
         isToday: date.isSame(new Date(), "day"),
         date: date
       };
-      days.push(<span key={day.date.toString()} className={"day" + (day.isToday ? " today" : "") + (day.isCurrentMonth ? "" : " different-month") + (day.date.isSame(this.props.selected) ? " selected" : "")} onClick={this.props.select.bind(null, day)}>{day.number}</span>);
+      days.push(
+        <span key={day.date.toString()}
+          className={"day" + (day.isToday ? " today" : "") + (day.isCurrentMonth ? "" : " different-month") + (day.date.isSame(this.props.selected) ? " selected" : "")}
+          onClick={this.props.select.bind(null, day)}>
+          {day.number}{ this.dayHours(date.month(),day.number) }
+        </span>
+      );
       date = date.clone();
       date.add(1, "d");
       
@@ -60,15 +74,21 @@ module.exports = React.createClass({
     var month = this.state.month;
     month.add(-1, "M");
     this.setState({ month: month });
+    this.props.onChange(month);
   },
   
   next: function() {
     var month = this.state.month;
     month.add(1, "M");
     this.setState({ month: month });
+    this.props.onChange(month);
   },
   
   select: function(day) {
+    this.props.onSelection(day);
+    return;
+    
+    // TODO: this is hacky, change state instead
     this.props.selected = day.date;
     this.forceUpdate();
   },
@@ -77,9 +97,9 @@ module.exports = React.createClass({
     return (
       <div className={this.props.className}>
         <div className="header">
-          <i className="fa fa-angle-left" onClick={this.previous}></i>
           {this.renderMonthLabel()}
-          <i className="fa fa-angle-right" onClick={this.next}></i>
+          <i className="icon-arrow-left" onClick={this.previous}></i>
+          <i className="icon-arrow-right" onClick={this.next}></i>
         </div>
         <DayNames />
         {this.renderWeeks()}
@@ -95,7 +115,7 @@ module.exports = React.createClass({
     count = 0;
     
     while (!done) {
-      weeks.push(<Week key={date.toString()} date={date.clone()} month={this.state.month} select={this.select} selected={this.props.selected} />);
+      weeks.push(<Week key={date.toString()} date={date.clone()} month={this.state.month} select={this.select} selected={this.props.selected} data={this.props.data} />);
       date.add(1, "w");
       done = count++ > 2 && monthIndex !== date.month();
       monthIndex = date.month();
@@ -105,6 +125,6 @@ module.exports = React.createClass({
   },
   
   renderMonthLabel: function() {
-    return <span>{this.state.month.format("MMMM, YYYY")}</span>;
+    return <span>{this.state.month.format("MMMM, YYYY")} <i className="icon-cross" onClick={this.props.onClose} /></span>;
   },
 });

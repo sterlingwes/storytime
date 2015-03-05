@@ -7,7 +7,7 @@ import TransitionGroup from "react/lib/ReactCSSTransitionGroup"
 
 const { Route, DefaultRoute, RouteHandler, Link } = Router
     // components
-    , { SearchBar, StoryList, StoryDetail } = require('./components/index')
+    , { SearchBar, StoryList, StoryDetail, Stats, StatsDay } = require('./components/index')
   ;
 
 var App = React.createClass({
@@ -31,6 +31,8 @@ const Routes = (
   <Route handler={App} path="/">
     <DefaultRoute handler={StoryList} />
     <Route handler={StoryDetail} path="/story/:id" name="detail" />
+    <Route handler={Stats} path="/stats" name="stats" />
+    <Route handler={StatsDay} path="/stats/:month/:day" name="statsday" />
   </Route>
 );
 

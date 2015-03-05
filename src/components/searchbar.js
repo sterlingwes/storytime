@@ -1,7 +1,10 @@
 const React = require('react/addons')
+    , Router = require('react-router')
     , cx = React.addons.classSet;
 
 module.exports = React.createClass({
+  
+  mixins: [ Router.Navigation ],
   
   getDefaultProps() {
     return {
@@ -15,6 +18,10 @@ module.exports = React.createClass({
   
   showPrefs() {
     quark.openPreferences();
+  },
+  
+  showStats() {
+    this.transitionTo('/stats');
   },
   
   onUnFocus() {
@@ -49,6 +56,7 @@ module.exports = React.createClass({
           value={searchVal}
           autoComplete="off"
           autofocus />
+        <i className="icon-pie-graph rotate" onClick={this.showStats} />
         <i className="icon-cog rotate" onClick={this.showPrefs} />
         <i className="icon-cross" onClick={this.quit} />
         { this.props.addHint() }

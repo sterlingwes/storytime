@@ -48,7 +48,7 @@ class Story {
     return this.props.hours.length;
   }
   
-  consolidateTime(unit) {
+  consolidateTime() {
     let days = {};
     this.props.hours.forEach(sesh => {
       let day = this.getDayValue(sesh.start);
