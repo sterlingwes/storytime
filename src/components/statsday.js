@@ -74,6 +74,7 @@ module.exports = React.createClass({
     return (
       <div className={cx(classes)}>
         <div className="st-detail-header">
+          <i className="icon-arrow-left" onClick={this.goBack}></i>
           <span className="st-detail-project">Day Stats</span>
           <span className="st-detail-name">Day, 2015</span>
         </div>

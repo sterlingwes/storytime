@@ -219,11 +219,11 @@ module.exports = React.createClass({
     }
   },
   
-  defaultSelection(action) {
+  defaultSelection(action, id) {
     if(!this.state) return;
     let stories = this.state.stories;
-    if(!this.state.selectStory && stories[0]) {
-      this.setState({ selectStory: stories[0].id }, ()=> {
+    if(id || (!this.state.selectStory && stories[0])) {
+      this.setState({ selectStory: id || stories[0].id }, ()=> {
         action();
       });
     }
@@ -254,7 +254,7 @@ module.exports = React.createClass({
     });
   },
   
-  showDetail() {
+  showDetail(id) {
     this.defaultSelection(()=> {
       this.setState({
         lastDetail: this.state.selectStory,
@@ -263,7 +263,7 @@ module.exports = React.createClass({
       if(this.state.selectStory) {
         this.transitionTo('detail', { id: this.state.selectStory });
       }
-    });
+    }, id);
   },
   
   /*
@@ -393,7 +393,8 @@ module.exports = React.createClass({
                   story={story.get('name')}
                   isSelected={selectedIndex === i}
                   isTiming={this.hasTimer(story.id)}
-                  project={story.get('project')} />;
+                  project={story.get('project')}
+                  onClick={this.showDetail.bind(this,story.id)} />;
     });
   },
   

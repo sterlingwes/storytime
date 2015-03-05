@@ -2,8 +2,26 @@
   padding 12px
   background-color #fff
   
-  .st-detail-header > span
-    display block
+  .st-detail-header
+    position relative
+    padding-bottom 8px
+    border-bottom 1px solid #ddd
+    margin-bottom 10px
+  
+    span
+      display block
+      margin-left 25px
+  
+    i
+      cursor pointer
+      position absolute
+      top 0px
+      font-size 1.3em
+      padding 10px 0
+      color blue_border
+      
+      &:hover
+        color blue_strong
     
   .st-detail-footer
     position absolute
@@ -20,9 +38,6 @@
   .st-detail-name
     color blue_emphasis
     font-size 1.1em
-    padding-bottom 8px
-    border-bottom 1px solid #ddd
-    margin-bottom 10px
   
   .st-detail-input
     position absolute

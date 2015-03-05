@@ -67,6 +67,7 @@ module.exports = React.createClass({
     return (
       <div className={cx(classes)}>
         <div className="st-detail-header">
+          <i className="icon-arrow-left" onClick={this.goBack}></i>
           <span className="st-detail-project">{ story.get('project') }</span>
           <span className="st-detail-name">{ story.get('name') }</span>
         </div>

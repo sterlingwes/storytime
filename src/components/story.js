@@ -23,7 +23,7 @@ module.exports = React.createClass({
     };
     
     return (
-      <div className={cx(classes)}>
+      <div className={cx(classes)} onClick={this.props.onClick}>
         <span className="st-projectlabel">{ this.props.project }</span>
         <span className="st-namelabel">{ this.props.story }</span>
         <span className="st-status">{ this.statusIcon() }</span>

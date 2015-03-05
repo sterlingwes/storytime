@@ -30,13 +30,12 @@ module.exports = React.createClass({
   },
   
   onDaySelected(day) {
-    console.log(day, this.state.hourData);
     let dt = day.date;
     this.transitionTo('statsday', { month: dt.month(), day: dt.date() });
   },
   
   onMonthChange(month) {
-    console.log(month);
+    // could do something?
   },
   
   render() {
