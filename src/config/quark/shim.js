@@ -9,6 +9,7 @@ module.exports = [
   'setLabel',
   'openPopup',
   'closePopup',
+  'showMenu',
   'on',
   'emit',
   'pin',

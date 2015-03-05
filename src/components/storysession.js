@@ -1,5 +1,6 @@
 import React from "react";
 import StoryDetailSesssion from "./storysession.js";
+import Actions from '../data/actions';
 import moment from "moment";
 
 const cx = React.addons.classSet
@@ -14,6 +15,32 @@ module.exports = React.createClass({
     };
   },
   
+  offsetTime(e) {
+    quark.pin();
+    alert('Options for editing time are coming soon.');
+    quark.unpin();
+    return;
+    
+    quark.showMenu({
+      items: [
+        {
+          label: "Add 10mins.",
+          click: function() {
+
+          }.bind(this)
+        },
+        {
+          label: "Subtract 10mins.",
+          click: function() {
+
+          }.bind(this)
+        }
+      ],
+      x: 50,
+      y: e.target.offsetTop
+    });
+  },
+  
   render() {
     let classes = {
       'st-storysession': true,
@@ -24,7 +51,7 @@ module.exports = React.createClass({
       , hours = Math.round(this.props.hours * 100) / 100;
     
     return (
-      <li className={cx(classes)}>
+      <li className={cx(classes)} onClick={this.offsetTime.bind(this,this.props.id)}>
         <span className="st-storyday">{ dayLabel }</span>
         <span className="st-storydayhours">{ hours }</span>
       </li>
