@@ -15,6 +15,7 @@ module.exports = (Component, props, stubs) => {
       getCurrentPathname: func,
       getCurrentParams: func,
       getCurrentQuery: func,
+      getParams: func,
       isActive: func,
     },
 
@@ -30,6 +31,7 @@ module.exports = (Component, props, stubs) => {
         getCurrentPathname () {},
         getCurrentParams () {},
         getCurrentQuery () {},
+        getParams () {},
         isActive () {},
       }, stubs);
     },
