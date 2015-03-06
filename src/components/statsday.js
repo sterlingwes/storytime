@@ -83,9 +83,6 @@ module.exports = React.createClass({
           ref="keyInput"
           onKeyDown={this.key}
           onBlur={this.refocus} />
-        <div className="st-detail-footer">
-          Stories with less than 0.01 hours are ignored.
-        </div>
       </div>
     );
   }

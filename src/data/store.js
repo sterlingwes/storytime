@@ -104,6 +104,12 @@ class StoryStore {
     return addedStories;
   }
   
+  closeOpenSessions() {
+    this.stories.forEach(story => {
+      story.closeAllSessions();
+    });
+  }
+  
   persist() {
     localStorage.setItem(StoreName, JSON.stringify(this.stories));
   }

@@ -3,13 +3,16 @@ import dom from "../support/dom" // must load before React
 import React from "react/addons"
 import { expect, sinon } from "../support/tools"
 import Store from "../../src/data/store"
+import contextWrapper from "../support/context"
 
 const TestUtils = React.addons.TestUtils
     , storySeed = require('../data/stories');
 
 localStorage.clear();
 let store = new Store(storySeed); // setup data before executing storylist
-import StoryList from "../../src/components/storylist"
+import StoryListComponent from "../../src/components/storylist"
+
+let StoryList = contextWrapper(StoryListComponent);
 
 describe('<StoryList />', function() {
   
@@ -17,7 +20,7 @@ describe('<StoryList />', function() {
 
     // stub methods
     let getQueryFn = ()=> { return { select: 0 } };
-    this.getQueryStub = sinon.stub(StoryList.type.prototype.__reactAutoBindMap, "getQuery", getQueryFn);
+    this.getQueryStub = sinon.stub(StoryListComponent.type.prototype.__reactAutoBindMap, "getQuery", getQueryFn);
     
     let renderTarget = document.getElementsByTagName('body')[0];
     this.renderedComponent = React.render(<StoryList />, renderTarget);
@@ -69,9 +72,8 @@ describe('<StoryList />', function() {
     });
     
     it('should set an empty search when the input first receives focus', ()=> {
-      expect(this.renderedComponent.state.searchStr).to.be('two');
       TestUtils.Simulate.focus(this.inputEl);
-      expect(this.renderedComponent.state.searchStr).to.be('');
+      expect(this.listEl.childNodes).to.have.length(3);
     });
   });
   

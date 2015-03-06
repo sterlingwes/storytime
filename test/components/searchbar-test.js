@@ -1,7 +1,8 @@
 import dom from "../support/dom" // must load before React
 
 import React from "react/addons"
-import SearchBar from "../../src/components/searchbar"
+import SearchBarComponent from "../../src/components/searchbar"
+import contextWrapper from "../support/context"
 import expect from "expect.js"
 import sinon from "sinon"
 
@@ -16,13 +17,16 @@ describe('<SearchBar />', function() {
     this.onScrollFn = sinon.spy();
     this.addHint = sinon.spy();
     
+    let SearchBar = contextWrapper(SearchBarComponent, {
+      onSearchFn: this.onSearchFn,
+      onKeyFn: this.onKeyFn,
+      onScrollFn: this.onScrollFn,
+      addHint: this.addHint
+    });
+    
     var renderTarget = document.getElementsByTagName('body')[0]
       , renderedComponent = React.render(
-          <SearchBar
-            onSearch={this.onSearchFn}
-            keyHandler={this.onKeyFn}
-            isScrolling={this.onScrollFn}
-            addHint={this.addHint} />,
+          <SearchBar />,
           renderTarget
         );
         

@@ -1,6 +1,7 @@
-const React = require('react/addons')
-    , Router = require('react-router')
-    , cx = React.addons.classSet;
+import React from 'react/addons';
+import Router from 'react-router';
+
+let cx = React.addons.classSet;
 
 module.exports = React.createClass({
   
@@ -32,6 +33,7 @@ module.exports = React.createClass({
   quit() {
     quark.pin();
     if(confirm('Exit Storytime?')) {
+      this.props.onQuit();
       quark.quit();
     } else quark.unpin();
   },

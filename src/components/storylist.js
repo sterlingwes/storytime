@@ -113,6 +113,10 @@ module.exports = React.createClass({
     });
   },
   
+  onQuit() {
+    store.closeOpenSessions();
+  },
+  
   //
   // GETTERS ===================================================================
   //
@@ -353,7 +357,7 @@ module.exports = React.createClass({
         <div className="st-storylist-empty">
           <div><i className="icon-clock"></i></div>
           <div className="small">
-            Use your keyboard to get around StoryTime.
+            Use your keyboard to get around Storytime.
             <br/><br/>
             <b><i className="icon-command"></i> + L</b> will focus the search box if lost.
             <br/><br/>
@@ -371,6 +375,7 @@ module.exports = React.createClass({
           onSearch={this.onSearch}
           onChange={this.onSearchChange}
           onFocus={this.onSearchFocus}
+          onQuit={this.onQuit}
           keyHandler={this.onKeyDown}
           query={this.state.searchStr}
           addHint={this.addHint}

@@ -45,6 +45,12 @@ class Story {
     if(this.hasOpenSession()) this.lastSession().end = m();
   }
   
+  closeAllSessions() {
+    this.props.hours.forEach(sesh => {
+      if(!sesh.end) sesh.end = m();
+    });
+  }
+  
   sessionCount() {
     return this.props.hours.length;
   }
