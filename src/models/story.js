@@ -78,6 +78,45 @@ class Story {
     return days;
   }
   
+  offsetTime(moment, msecs) {
+    let msecsLeft = Math.abs(msecs)
+      , daySessions = this.getSessionsForDay(moment)
+      , count = 0;
+      
+    while(msecsLeft > 0 && count < daySessions.length) {
+      let day = daySessions[count]
+        , startVal = day.start.valueOf();
+        
+      if(msecs > 0) {
+        day.start = m(startVal - msecs); // adding time by moving start date back
+        msecsLeft = 0;
+      }
+      else { // we potentially run out of time when negative offsetting, so check for that
+        let endDt = day.end || m()
+          , endVal = endDt.valueOf()
+          , sessionDuration = endVal - startVal;
+          
+        if(sessionDuration < msecsLeft) {
+          msecsLeft = msecsLeft - sessionDuration;
+          day.start = endDt.clone();
+        }
+        else { // one session will do it
+          day.start = m(startVal - msecs);
+          msecsLeft = 0;
+        }
+      }
+      count++;
+    }
+  }
+  
+  getSessionsForDay(moment) {
+    let hours = [];
+    this.props.hours.forEach(sesh => {
+      if(moment.isSame(sesh.start, 'day')) hours.push(sesh);
+    });
+    return hours;
+  }
+  
   getDayValue(moment) {
     return (new Date(moment.year(),moment.month(),moment.date())).valueOf();
   }

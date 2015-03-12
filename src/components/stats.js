@@ -40,7 +40,8 @@ module.exports = React.createClass({
   
   render() {
     let classes = {
-      'st-stats': true
+      'st-stats': true,
+      'st-child-pane': true
     };
     
     return (

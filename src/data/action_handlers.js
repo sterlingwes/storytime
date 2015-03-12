@@ -45,6 +45,10 @@ const ActionHandler = {
     this.setPref('current', '');
   },
   
+  offsetTimer(payload) {
+    this.offsetOn(payload.storyId, payload.day, payload.msecs);
+  },
+  
   addSession(payload) {}
   
 }

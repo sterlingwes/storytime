@@ -4,39 +4,38 @@ import Actions from '../data/actions';
 import moment from "moment";
 
 const cx = React.addons.classSet
-    , store = require('../data/index');
+    , store = require('../data/index')
+    , MINS_10 = 600000;
 
 module.exports = React.createClass({
   
   getDefaultProps() {
     return {
       isTiming: false,
-      hours: 0
+      hours: 0,
+      story: {},
+      day: 0
     };
   },
   
   offsetTime(e) {
-    quark.pin();
-    alert('Options for editing time are coming soon.');
-    quark.unpin();
-    return;
-    
+    let day = moment(this.props.day);
     quark.showMenu({
       items: [
         {
           label: "Add 10mins.",
           click: function() {
-
+            Actions.offsetTime(this.props.story.id, day, MINS_10);
           }.bind(this)
         },
         {
           label: "Subtract 10mins.",
           click: function() {
-
+            Actions.offsetTime(this.props.story.id, day, -MINS_10);
           }.bind(this)
         }
       ],
-      x: 50,
+      x: e.target.offsetLeft,
       y: e.target.offsetTop
     });
   },
@@ -51,7 +50,7 @@ module.exports = React.createClass({
       , hours = Math.round(this.props.hours * 100) / 100;
     
     return (
-      <li className={cx(classes)} onClick={this.offsetTime.bind(this,this.props.id)}>
+      <li className={cx(classes)} onClick={this.offsetTime}>
         <span className="st-storyday">{ dayLabel }</span>
         <span className="st-storydayhours">{ hours }</span>
       </li>

@@ -74,6 +74,12 @@ class StoryStore {
     this.persist();
   }
   
+  update(newStory) {
+    if(typeof this.index[newStory.id] === 'undefined') return false;
+    this.stories.splice(this.index[newStory.id],1,newStory);
+    this.persist();
+  }
+  
   reindex() {
     this.index = {};
     this.stories.forEach((story,indx) => {
@@ -102,6 +108,13 @@ class StoryStore {
     
     this.persist();
     return addedStories;
+  }
+  
+  offsetOn(storyId, dayMoment, msecs) {
+    let story = this.getById(storyId);
+    if(!story) return; // TODO: error handling
+    story.offsetTime(dayMoment, msecs);
+    this.update(story);
   }
   
   closeOpenSessions() {
@@ -180,6 +193,13 @@ class StoryStore {
     });
   }
   
+  /*
+   * create a mapping of total project hours for a given day
+   * indexed first by month, then date
+   * each value contains this.addData structure
+   *
+   * TODO: add year to month key
+   */
   buildDateLookup() {
     let data = {};
       
@@ -193,11 +213,17 @@ class StoryStore {
     
     Object.keys(data).forEach(mNo => {
       Object.keys(data[mNo]).forEach(dNo => {
-        let target = data[mNo][dNo];
-        target.hours = Math.round(target.stories.reduce((memo,o)=> {
-          memo += o.hours;
-          return memo;
-        }, 0) * 10) / 10;
+        let target = data[mNo][dNo]
+          , totalHours = target.stories.reduce((memo,o)=> {
+              memo += o.hours;
+              return memo;
+            }, 0);
+        target.hours = Math.round(totalHours * 10) / 10;
+        
+        // sort stories by descending hours value
+        target.stories.sort((a,b) => {
+          return b.hours - a.hours;
+        });
       });
     });
     

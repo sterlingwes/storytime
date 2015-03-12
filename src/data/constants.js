@@ -5,7 +5,8 @@ const actions = [
   'DESTROY_SESSION',
   'SET_SELECTION',
   'START_TIMER',
-  'STOP_TIMER'
+  'STOP_TIMER',
+  'OFFSET_TIMER'
 ]
 
 let constantMapping = {};

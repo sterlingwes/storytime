@@ -14,8 +14,34 @@ module.exports = React.createClass({
     };
   },
   
+  getInitialState() {
+    return this.getState();
+  },
+  
+  getState() {
+    let params = this.getParams();
+    return {
+      story: store.getById(params.id)
+    };
+  },
+  
   componentDidMount() {
     this.refs.keyInput.getDOMNode().focus();
+    store.addChangeListener(this.onModelChange);
+  },
+  
+  componentWillUnmount() {
+    store.removeChangeListener(this.onModelChange);
+  },
+  
+  //
+  // EVENT HANDLERS ============================================================
+  //
+  
+  onModelChange(payload) {
+    this.setState(this.getState(), ()=> {
+      console.log('onModelChange', arguments[0], this.state);
+    });
   },
   
   key(e) {
@@ -33,6 +59,7 @@ module.exports = React.createClass({
   },
   
   consolidateSessions(story) {
+    if(!'consolidateTime' in story) return [];
     let days = story.consolidateTime();
     return Object.keys(days).sort().reverse().map(day => {
       let dayMeta = days[day];
@@ -40,18 +67,19 @@ module.exports = React.createClass({
         <StoryDetailSession key={day}
           day={parseInt(day)}
           hours={dayMeta.hours}
-          isTiming={dayMeta.isOpen} />
+          isTiming={dayMeta.isOpen}
+          story={story} />
       );
     });
   },
   
   render() {
     let classes = {
-      'st-storydetail': true
+      'st-storydetail': true,
+      'st-child-pane': true
     };
     
-    let params = this.getParams()
-      , story = store.getById(params.id)
+    let story = this.state ? this.state.story : {}
       , sessionList
       , sessions = this.consolidateSessions(story);
       

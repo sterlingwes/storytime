@@ -88,6 +88,54 @@ describe('Story model class', function() {
     });
   });
   
+  describe('offsetTime()', ()=> {
+    it('should add to the time for an open session', ()=> {
+      this.story.newSession();
+      this.story.offsetTime(this.story.lastSession().start, 600000);
+      let sesh = this.story.lastSession()
+        , duration = moment() - sesh.start;
+      expect(duration).to.be.greaterThan(599999);
+      expect(duration).to.be.lessThan(600100);
+    });
+    
+    it('should add to the time for a closed session', ()=> {
+      this.story.newSession();
+      this.story.endSession();
+      this.story.offsetTime(this.story.lastSession().start, 600000);
+      let sesh = this.story.lastSession()
+        , duration = sesh.end - sesh.start;
+      expect(duration).to.be.greaterThan(599999);
+      expect(duration).to.be.lessThan(600100);
+    });
+    
+    it('should not subtract time for an open session with no time left', ()=> {
+      this.story.newSession();
+      this.story.offsetTime(this.story.lastSession().start, -600000);
+      let sesh = this.story.lastSession()
+        , duration = moment() - sesh.start;
+      expect(duration).to.be(0);
+    });
+    
+    it('should not subtract time for a closed session with no time left', ()=> {
+      this.story.newSession();
+      this.story.endSession();
+      this.story.offsetTime(this.story.lastSession().start, -100);
+      let sesh = this.story.lastSession()
+        , duration = sesh.end - sesh.start;
+      expect(duration).to.be(0);
+    });
+    
+    it('should subtract time for a closed session', ()=> {
+      this.story.newSession();
+      this.story.endSession();
+      this.story.props.hours[0].start = moment(this.story.props.hours[0].start - 3600000) // minus 1 hour
+      this.story.offsetTime(this.story.lastSession().start, -600000);
+      let sesh = this.story.lastSession()
+        , duration = sesh.end - sesh.start;
+      expect(duration).to.be(600000 * 5);
+    });
+  });
+  
   describe('toString', ()=> {
     it('should return the sortIndex', ()=> {
       expect(this.story.toString()).to.eql('0');

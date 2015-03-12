@@ -47,15 +47,16 @@ module.exports = React.createClass({
   
   consolidateSessions() {
     if(!this.state || !this.state.hours) return [];
-    return this.state.hours.map(storyHours => {
+    return this.state.hours.map((storyHours,i) => {
       let hrs = Math.round(storyHours.hours * 10) / 10;
-      return <li className="vertical">{ hrs } - <i>{ storyHours.project }</i> { storyHours.name }</li>;
+      return <li key={i} className="vertical">{ hrs } - <i>{ storyHours.project }</i> { storyHours.name }</li>;
     });
   },
   
   render() {
     let classes = {
-      'st-storydetail': true
+      'st-storydetail': true,
+      'st-child-pane': true
     };
     
     let params = this.getParams()

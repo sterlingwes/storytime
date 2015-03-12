@@ -409,7 +409,7 @@ module.exports = React.createClass({
     let parts = this.parseStoryAttributes();
     return (
       <div className="st-search-hint">
-        <i className="icon-arrow-up"></i> Use <b><i className="icon-command"></i> + Enter</b> to add <b>{parts[1]}</b> to the <b>{parts[0]}</b> project
+        Use <b><i className="icon-command"></i> + Enter</b> to add <b>{parts[1]}</b> to the <b>{parts[0]}</b> project
       </div>
     );
   },

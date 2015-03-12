@@ -37,6 +37,15 @@ let Actions = {
       actionType: Constants.STOP_TIMER,
       storyId: storyId
     });
+  },
+  
+  offsetTime(storyId, day, msecs) {
+    Dispatcher.dispatch({
+      actionType: Constants.OFFSET_TIMER,
+      storyId: storyId,
+      day: day,
+      msecs: msecs
+    });
   }
   
 };
