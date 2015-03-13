@@ -27,7 +27,9 @@ const ActionHandler = {
   // STORIES
   
   addStory(payload) {
-    let added = this.save(_.pick(payload, 'project', 'name'));
+    let args = _.pick(payload, 'project', 'name');
+    if(!args.name) return false; // don't add, don't emitChange on store
+    let added = this.save(args);
     this.setPref('selection', added[0].id);
   },
   
