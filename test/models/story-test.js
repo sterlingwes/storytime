@@ -138,7 +138,11 @@ describe('Story model class', function() {
   
   describe('toString', ()=> {
     it('should return the sortIndex', ()=> {
-      expect(this.story.toString()).to.eql('0');
+      let now = moment().valueOf()
+        , sortIndex = this.story.sortIndex
+        , indexDif = now - sortIndex;
+
+      expect(indexDif).to.be.lessThan(10);
     })
   });
 })

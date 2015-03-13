@@ -100,7 +100,7 @@ describe('<StoryList />', function() {
     
     it('should start the timer on enter', ()=> {
       TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 13 });
-      expect(this.listEl.childNodes[2].className.indexOf('st-timing')>=0).to.be(true);
+      expect(this.listEl.childNodes[0].className.indexOf('st-timing')>=0).to.be(true);
     });
     
     it('should stop the timer on enter after it has started', ()=> {
@@ -109,20 +109,21 @@ describe('<StoryList />', function() {
     });
     
     it('should stop prior timers when starting one that is not the current timer', ()=> {
+      TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 38 }); // key up
+      TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 13 }); // enter
+      expect(this.listEl.childNodes[0].className.indexOf('st-timing')>=0).to.be(true);
+      expect(this.listEl.childNodes[2].className.indexOf('st-timing')>=0).to.be(false);
       TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 38 });
       TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 13 });
-      expect(this.listEl.childNodes[1].className.indexOf('st-timing')>=0).to.be(true);
-      expect(this.listEl.childNodes[2].className.indexOf('st-timing')>=0).to.be(false);
-      TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 40 });
-      TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 13 });
       expect(this.listEl.childNodes[1].className.indexOf('st-timing')>=0).to.be(false);
-      expect(this.listEl.childNodes[2].className.indexOf('st-timing')>=0).to.be(true);
+      expect(this.listEl.childNodes[2].className.indexOf('st-timing')>=0).to.be(false);
+      expect(this.listEl.childNodes[0].className.indexOf('st-timing')>=0).to.be(true);
     });
     
-    it('should allow for keybaord jump to bottom', () => {
-      TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 40, metaKey: true });
-      expect(this.isSelected(2)).to.be(true);
-    });
+    // it('should allow for keybaord jump to bottom', () => {
+    //   TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 40, metaKey: true });
+    //   expect(this.isSelected(2)).to.be(true);
+    // });
     
     it('should close the pop-up on ESCape', ()=> {
       sinon.spy(global.quark, 'closePopup');
@@ -134,7 +135,7 @@ describe('<StoryList />', function() {
       this.search('test :)');
       TestUtils.Simulate.keyDown(this.inputEl, { keyCode: 13, metaKey: true });
       expect(this.listEl.childNodes.length).to.be(4);
-      expect(this.isSelected(3)).to.be(true);
+      expect(this.isSelected(0)).to.be(true);
       
       let story = JSON.parse(localStorage.getItem('st'))[3];
       expect(story.name).to.be(':)');

@@ -19,17 +19,22 @@ class Story {
       };
     });
     
-    this.sortIndex = latestPeriod;
+    this.sortIndex = latestPeriod ? latestPeriod.valueOf() : m().valueOf();
   }
   
   get(key) {
     return this.props[key];
   }
   
+  setSortIndex() {
+    this.sortIndex = m().valueOf();
+  }
+  
   newSession() {
     this.props.hours.push({
       start: m()
     });
+    this.setSortIndex();
   }
   
   lastSession() {
@@ -42,12 +47,18 @@ class Story {
   }
   
   endSession() {
-    if(this.hasOpenSession()) this.lastSession().end = m();
+    if(this.hasOpenSession()) {
+      this.lastSession().end = m();
+      this.setSortIndex();
+    }
   }
   
   closeAllSessions() {
     this.props.hours.forEach(sesh => {
-      if(!sesh.end) sesh.end = m();
+      if(!sesh.end) {
+        sesh.end = m();
+        this.setSortIndex();
+      }
     });
   }
   
