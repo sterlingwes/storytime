@@ -1,10 +1,8 @@
 # Storytime
 
-A simple time tracking menu bar app for scrum
+A simple time tracking menu bar app
 
-## Roadmap
-
-[See milestones](https://github.com/sterlingwes/storytime/milestones).
+![Screenshot](https://cloud.githubusercontent.com/assets/1047502/6642736/65c83f06-c97d-11e4-91c0-e98dd0fc3479.png)
 
 ## Development
 
@@ -31,7 +29,7 @@ Owing to dependency issues, a node version manager is necessary for development.
 *  node 1.1 to run the dev server
 *  node 0.10 to run tests
 
-Closing this gap is a WIP.
+Closing this gap is a WIP. In the meantime use nvm or nave to switch between the two.
 
 ### Building & Distributing
 
