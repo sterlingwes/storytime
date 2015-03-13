@@ -26,6 +26,8 @@
     
   &.st-selected, &:hover
     cursor pointer
+    
+  &.st-selected
     background-color blue_light
     color blue_emphasis
     
@@ -38,6 +40,9 @@
       right 5px
       content "\e095"
       font-family 'icomoon'
+  
+  &:hover
+    background-color darken(grey_base, 5%)
     
   &.st-hidden
     overflow hidden
