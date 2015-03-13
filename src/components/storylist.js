@@ -288,11 +288,13 @@ module.exports = React.createClass({
     
     // if we're scrolling from off-top
     if(yPos < listNode.scrollTop)
-      listNode.scrollTop = yPos - 20;
+      listNode.scrollTop = yPos;
       
     // if we're scrolling from off-bottom
-    if((yPos + 36) >= (listNode.scrollTop + listNode.offsetHeight))
-      listNode.scrollTop = yPos + 36;
+    else if((yPos + 34) >= (listNode.scrollTop + listNode.offsetHeight)) {
+      if(listNode.scrollTop === 0 && yPos > 50) listNode.scrollTop = yPos;
+      else listNode.scrollTop = listNode.scrollTop + 36;
+    }
   },
   
   scrollTop() {
