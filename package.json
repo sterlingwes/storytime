@@ -7,6 +7,11 @@
     "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha test/**/*-test.js -- --compilers js:babel/register",
     "start": "node index.js"
   },
+  "standard": {
+    "ignore": [
+      "/src"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/sterlingwes/storytime.git"
